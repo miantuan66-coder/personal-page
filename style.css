@@ -149,7 +149,6 @@ main {
   gap: 18px;
 }
 
-.hero-content,
 .hero-life-card,
 .hero-ai-card {
   display: grid;
@@ -161,8 +160,10 @@ main {
 }
 
 .hero-content {
+  display: grid;
   align-content: center;
   min-height: 320px;
+  padding: clamp(12px, 4vw, 36px) clamp(12px, 5vw, 48px);
 }
 
 .hero-life-card,
@@ -170,7 +171,7 @@ main {
   align-content: center;
   gap: 18px;
   min-height: 190px;
-  background: #f8fbfb;
+  background: var(--surface);
 }
 
 .hero-life-card h2,
