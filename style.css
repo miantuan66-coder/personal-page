@@ -266,7 +266,6 @@ h3 {
 
 .profile-panel p,
 .section-heading p,
-.life-body p,
 .timeline p,
 .contact-section p,
 .site-footer {
@@ -319,8 +318,7 @@ h3 {
   margin-bottom: 0;
 }
 
-.intro-grid,
-.life-grid {
+.intro-grid {
   display: grid;
   gap: 14px;
 }
@@ -337,64 +335,8 @@ h3 {
   border-radius: 8px;
 }
 
-.intro-grid p,
-.life-body p {
+.intro-grid p {
   margin-bottom: 0;
-}
-
-.life-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.life-card {
-  overflow: hidden;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-
-.life-media {
-  position: relative;
-  display: grid;
-  min-height: 150px;
-  place-items: center;
-  border-bottom: 1px solid var(--line);
-}
-
-.life-media::before,
-.life-media::after {
-  position: absolute;
-  content: "";
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.34);
-}
-
-.life-media::before {
-  width: 66%;
-  height: 52%;
-  border: 1px solid rgba(255, 255, 255, 0.74);
-}
-
-.life-media::after {
-  width: 34%;
-  height: 12%;
-  bottom: 24px;
-}
-
-.media-home {
-  background: linear-gradient(135deg, #0d6b6f, #5b8d61);
-}
-
-.media-city {
-  background: linear-gradient(135deg, #496f9f, #8a6f4d);
-}
-
-.media-study {
-  background: linear-gradient(135deg, #c26a34, #706b42);
-}
-
-.life-body {
-  padding: 18px;
 }
 
 .skill-cloud span {
@@ -520,8 +462,7 @@ h3 {
     align-content: start;
   }
 
-  .intro-grid,
-  .life-grid {
+  .intro-grid {
     grid-template-columns: 1fr;
   }
 
