@@ -17,6 +17,7 @@ const translations = {
     heroCopy:
       "このページは履歴書だけでは伝わりにくい、私の生活状況、学習習慣、適応力、長く安定して働きたい姿勢を補足するためのものです。",
     heroPrimary: "生活と学習を見る",
+    heroAi: "AI活用を見る",
     nameLabel: "氏名",
     nameValue: "トウシュンヨウ",
     profileLabel: "現在の状態",
@@ -83,6 +84,7 @@ const translations = {
     heroTitle: "你好，我在日本认真生活，也在持续学习。",
     heroCopy: "这个网页用来补充简历之外的信息：我的生活状态、学习习惯、适应能力和长期稳定发展的态度。",
     heroPrimary: "查看生活与学习",
+    heroAi: "查看 AI 使用",
     nameLabel: "姓名",
     nameValue: "董春阳",
     profileLabel: "当前状态",
@@ -147,6 +149,7 @@ const translations = {
     heroCopy:
       "This page adds context beyond my resume: my life stability, learning habits, adaptability, and intention to grow steadily over the long term.",
     heroPrimary: "View life and learning",
+    heroAi: "View AI use",
     nameLabel: "Name",
     nameValue: "Dong chunyang",
     profileLabel: "Current status",
