@@ -138,15 +138,33 @@ main {
   padding: clamp(34px, 8vw, 86px) 0 30px;
 }
 
-.hero-content {
+.hero-stack {
   display: grid;
-  align-content: center;
-  min-height: 560px;
+  grid-template-rows: minmax(0, 1.35fr) auto;
+  gap: 18px;
+}
+
+.hero-content,
+.hero-ai-card {
+  display: grid;
   padding: clamp(22px, 5vw, 48px);
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
   box-shadow: var(--shadow);
+}
+
+.hero-content {
+  align-content: center;
+  min-height: 348px;
+}
+
+.hero-ai-card {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+  min-height: 190px;
+  background: #f8fbfb;
 }
 
 .eyebrow {
@@ -168,7 +186,7 @@ p {
 h1 {
   max-width: 760px;
   margin-bottom: 18px;
-  font-size: clamp(38px, 7vw, 76px);
+  font-size: clamp(38px, 6vw, 66px);
   line-height: 1.04;
 }
 
@@ -188,6 +206,19 @@ h3 {
   max-width: 640px;
   color: var(--muted);
   font-size: clamp(17px, 2vw, 20px);
+}
+
+.hero-ai-card h2 {
+  margin-bottom: 10px;
+  font-size: clamp(28px, 3.4vw, 42px);
+}
+
+.hero-ai-card p:not(.eyebrow) {
+  max-width: 620px;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: clamp(16px, 1.8vw, 18px);
+  font-weight: 750;
 }
 
 .hero-actions {
@@ -450,6 +481,14 @@ h3 {
     min-height: auto;
   }
 
+  .hero-stack {
+    grid-template-rows: auto;
+  }
+
+  .hero-ai-card {
+    grid-template-columns: 1fr;
+  }
+
   .profile-panel {
     align-content: start;
   }
@@ -489,6 +528,7 @@ h3 {
   }
 
   .hero-content,
+  .hero-ai-card,
   .profile-panel,
   .section {
     padding: 18px;

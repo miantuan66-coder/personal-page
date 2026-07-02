@@ -31,16 +31,28 @@
 
     <main id="top">
       <section class="hero">
-        <div class="hero-content">
-          <p class="eyebrow">Personal Page</p>
-          <h1 data-i18n="heroTitle">こんにちは。私は日本で誠実に生活し、学び続けています。</h1>
-          <p class="hero-copy" data-i18n="heroCopy">
-            このページは履歴書だけでは伝わりにくい、私の生活状況、学習習慣、適応力、長く安定して働きたい姿勢を補足するためのものです。
-          </p>
-          <div class="hero-actions" aria-label="主な操作" data-i18n-attr="aria-label:heroActionsAria">
-            <a class="button primary" href="#learning" data-i18n="heroPrimary">生活と学習を見る</a>
-            <a class="button secondary" href="#ai" data-i18n="heroAi">AI活用を見る</a>
+        <div class="hero-stack">
+          <div class="hero-content">
+            <p class="eyebrow">Personal Page</p>
+            <h1 data-i18n="heroTitle">こんにちは。私は日本で誠実に生活し、学び続けています。</h1>
+            <p class="hero-copy" data-i18n="heroCopy">
+              このページは履歴書だけでは伝わりにくい、私の生活状況、学習習慣、適応力、長く安定して働きたい姿勢を補足するためのものです。
+            </p>
+            <div class="hero-actions" aria-label="主な操作" data-i18n-attr="aria-label:heroActionsAria">
+              <a class="button primary" href="#learning" data-i18n="heroPrimary">生活と学習を見る</a>
+            </div>
           </div>
+
+          <article class="hero-ai-card" aria-labelledby="hero-ai-title">
+            <div>
+              <p class="eyebrow">AI Collaboration</p>
+              <h2 id="hero-ai-title" data-i18n="heroAiTitle">AI活用の入口</h2>
+              <p data-i18n="heroAiCopy">
+                ChatGPTやCodexを使い、考えの整理、文章作成、画面設計、実装確認を少しずつ進めています。
+              </p>
+            </div>
+            <a class="button secondary" href="#ai" data-i18n="heroAi">AI活用を見る</a>
+          </article>
         </div>
 
         <aside class="profile-panel" aria-label="個人概要" data-i18n-attr="aria-label:profileAria">
