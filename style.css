@@ -150,6 +150,7 @@ main {
 }
 
 .hero-content,
+.hero-life-card,
 .hero-ai-card {
   display: grid;
   padding: clamp(22px, 5vw, 48px);
@@ -161,25 +162,21 @@ main {
 
 .hero-content {
   align-content: center;
-  min-height: 348px;
+  min-height: 320px;
 }
 
-.hero-intro-panel {
-  margin-top: clamp(30px, 5vw, 46px);
-  padding-top: clamp(24px, 4vw, 34px);
-  border-top: 2px solid var(--line);
-}
-
-.hero-intro-panel h2 {
-  margin-bottom: 10px;
-  font-size: clamp(28px, 3.8vw, 44px);
-}
-
+.hero-life-card,
 .hero-ai-card {
   align-content: center;
   gap: 18px;
   min-height: 190px;
   background: #f8fbfb;
+}
+
+.hero-life-card h2,
+.hero-ai-card h2 {
+  margin-bottom: 10px;
+  font-size: clamp(28px, 3.4vw, 42px);
 }
 
 .eyebrow {
@@ -223,11 +220,7 @@ h3 {
   font-size: clamp(17px, 2vw, 20px);
 }
 
-.hero-ai-card h2 {
-  margin-bottom: 10px;
-  font-size: clamp(28px, 3.4vw, 42px);
-}
-
+.hero-life-card p:not(.eyebrow),
 .hero-ai-card p:not(.eyebrow) {
   max-width: 620px;
   margin-bottom: 0;
@@ -236,6 +229,7 @@ h3 {
   font-weight: 750;
 }
 
+.hero-life-card .button,
 .hero-ai-card .button {
   justify-self: start;
 }
@@ -686,6 +680,7 @@ h3 {
   }
 
   .hero-content,
+  .hero-life-card,
   .hero-ai-card,
   .profile-panel,
   .section {
