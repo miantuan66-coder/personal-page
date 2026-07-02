@@ -15,7 +15,7 @@ const translations = {
     heroTitle: "こんにちは。私は日本で誠実に生活し、学び続けています。",
     heroCopy:
       "このページは履歴書だけでは伝わりにくい、私の生活状況、学習習慣、適応力、長く安定して働きたい姿勢を補足するためのものです。",
-    heroPrimary: "学習を見る",
+    heroPrimary: "生活と学習を見る",
     avatar: "生",
     profileLabel: "現在の状態",
     profileTitle: "安定した生活 / 継続的な学習 / 長期的な成長",
@@ -70,7 +70,7 @@ const translations = {
     profileAria: "个人摘要",
     heroTitle: "你好，我在日本认真生活，也在持续学习。",
     heroCopy: "这个网页用来补充简历之外的信息：我的生活状态、学习习惯、适应能力和长期稳定发展的态度。",
-    heroPrimary: "查看学习记录",
+    heroPrimary: "查看生活与学习",
     avatar: "生",
     profileLabel: "当前状态",
     profileTitle: "稳定生活 / 持续学习 / 长期发展",
@@ -125,7 +125,7 @@ const translations = {
     heroTitle: "Hello, I live steadily in Japan and continue learning every day.",
     heroCopy:
       "This page adds context beyond my resume: my life stability, learning habits, adaptability, and intention to grow steadily over the long term.",
-    heroPrimary: "View learning",
+    heroPrimary: "View life and learning",
     avatar: "Life",
     profileLabel: "Current status",
     profileTitle: "Stable life / Continuous learning / Long-term growth",
