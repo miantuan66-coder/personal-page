@@ -1,2 +1,4 @@
 .DS_Store
-preview-qr-*.png
+*.zip
+*qr*.png
+supabase.sql
