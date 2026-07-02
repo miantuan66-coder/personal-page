@@ -65,6 +65,7 @@ button {
 
 .brand,
 .nav,
+.language-switcher,
 .hero-actions,
 .contact-actions {
   display: flex;
@@ -97,6 +98,32 @@ button {
 
 .nav a:hover {
   color: var(--brand);
+}
+
+.language-switcher {
+  gap: 4px;
+  padding: 4px;
+  background: #edf3f3;
+  border: 1px solid #cbdadb;
+  border-radius: 8px;
+}
+
+.language-button {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #46565d;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.language-button:hover,
+.language-button.active {
+  color: #fff;
+  background: var(--brand);
 }
 
 main {
@@ -466,6 +493,20 @@ h3 {
 }
 
 @media (max-width: 900px) {
+  .site-header {
+    flex-wrap: wrap;
+  }
+
+  .language-switcher {
+    order: 3;
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .language-button {
+    flex: 1;
+  }
+
   .hero {
     grid-template-columns: 1fr;
     padding-top: 28px;
@@ -497,11 +538,16 @@ h3 {
 @media (max-width: 640px) {
   .site-header {
     align-items: flex-start;
+    gap: 12px;
   }
 
   .nav {
     gap: 10px;
     font-size: 14px;
+  }
+
+  .language-button {
+    padding-inline: 6px;
   }
 
   main,
