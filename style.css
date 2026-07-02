@@ -385,6 +385,25 @@ h3 {
 
 .detail-section {
   margin-top: 18px;
+  padding: clamp(16px, 3vw, 24px);
+}
+
+.detail-section .section-heading {
+  margin-bottom: 14px;
+}
+
+.detail-section h2 {
+  margin-bottom: 6px;
+  font-size: clamp(20px, 2.6vw, 28px);
+}
+
+.detail-section .eyebrow {
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.detail-section #lastUpdated {
+  font-size: 13px;
 }
 
 .section-heading {
@@ -428,19 +447,25 @@ h3 {
 
 .detail-list {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .detail-list article {
-  padding: 20px;
+  padding: 14px 16px;
   background: #f9fbfb;
   border: 1px solid var(--line);
   border-radius: 8px;
 }
 
+.detail-list h3 {
+  margin-bottom: 6px;
+  font-size: 17px;
+}
+
 .detail-list p {
   margin-bottom: 0;
   color: var(--muted);
+  font-size: 14px;
 }
 
 .media-grid {
@@ -550,24 +575,24 @@ h3 {
 
 .update-section {
   margin-top: 14px;
-  padding: clamp(16px, 3vw, 24px);
+  padding: 14px 18px;
   background: #f9fbfb;
 }
 
 .update-section .section-heading {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .update-section h2 {
-  margin-bottom: 8px;
-  font-size: clamp(19px, 3vw, 27px);
+  margin-bottom: 4px;
+  font-size: clamp(16px, 2.2vw, 22px);
 }
 
 .update-section p {
-  max-width: 760px;
-  margin-bottom: 6px;
+  max-width: 720px;
+  margin-bottom: 4px;
   color: var(--muted);
-  font-size: clamp(14px, 1.6vw, 16px);
+  font-size: 13px;
   font-weight: 750;
 }
 
