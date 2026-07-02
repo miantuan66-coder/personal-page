@@ -89,7 +89,7 @@ button {
 }
 
 .nav {
-  gap: clamp(14px, 3vw, 28px);
+  gap: clamp(18px, 4vw, 44px);
   color: #37464d;
   font-size: 15px;
   font-weight: 750;
@@ -165,9 +165,9 @@ main {
 }
 
 .hero-intro-panel {
-  margin-top: 22px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
+  margin-top: clamp(30px, 5vw, 46px);
+  padding-top: clamp(24px, 4vw, 34px);
+  border-top: 2px solid var(--line);
 }
 
 .hero-intro-panel h2 {
