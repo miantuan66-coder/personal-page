@@ -159,9 +159,19 @@ main {
   min-height: 348px;
 }
 
+.hero-intro-panel {
+  margin-top: 22px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+
+.hero-intro-panel h2 {
+  margin-bottom: 10px;
+  font-size: clamp(28px, 3.8vw, 44px);
+}
+
 .hero-ai-card {
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
+  align-content: center;
   gap: 18px;
   min-height: 190px;
   background: #f8fbfb;
@@ -219,6 +229,10 @@ h3 {
   color: var(--muted);
   font-size: clamp(16px, 1.8vw, 18px);
   font-weight: 750;
+}
+
+.hero-ai-card .button {
+  justify-self: start;
 }
 
 .hero-actions {
