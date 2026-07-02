@@ -66,8 +66,7 @@ button {
 .brand,
 .nav,
 .language-switcher,
-.hero-actions,
-.contact-actions {
+.hero-actions {
   display: flex;
   align-items: center;
 }
@@ -191,8 +190,7 @@ h3 {
   font-size: clamp(17px, 2vw, 20px);
 }
 
-.hero-actions,
-.contact-actions {
+.hero-actions {
   flex-wrap: wrap;
   gap: 12px;
   margin-top: 18px;
@@ -230,8 +228,7 @@ h3 {
 }
 
 .profile-panel,
-.section,
-.contact-section {
+.section {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -267,7 +264,6 @@ h3 {
 .profile-panel p,
 .section-heading p,
 .timeline p,
-.contact-section p,
 .site-footer {
   color: var(--muted);
 }
@@ -294,8 +290,7 @@ h3 {
   font-weight: 800;
 }
 
-.section,
-.contact-section {
+.section {
   margin: 18px 0;
   padding: clamp(20px, 4vw, 34px);
 }
@@ -383,24 +378,6 @@ h3 {
   margin-bottom: 0;
 }
 
-.contact-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
-  margin-bottom: 32px;
-  background: var(--surface-soft);
-}
-
-.contact-section > div:first-child {
-  max-width: 700px;
-}
-
-.contact-actions {
-  margin-top: 0;
-  flex-shrink: 0;
-}
-
 .site-footer {
   display: flex;
   align-items: center;
@@ -410,28 +387,6 @@ h3 {
   margin: 0 auto;
   padding: 22px 0 34px;
   font-size: 14px;
-}
-
-.toast {
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 20;
-  max-width: min(320px, calc(100vw - 36px));
-  padding: 12px 14px;
-  color: #fff;
-  background: var(--brand-dark);
-  border-radius: 8px;
-  box-shadow: 0 16px 36px rgba(24, 32, 38, 0.18);
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 180ms ease, transform 180ms ease;
-  pointer-events: none;
-}
-
-.toast.visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 @media (max-width: 900px) {
@@ -466,13 +421,8 @@ h3 {
     grid-template-columns: 1fr;
   }
 
-  .section-heading.split,
-  .contact-section {
+  .section-heading.split {
     display: grid;
-  }
-
-  .contact-actions {
-    justify-content: start;
   }
 }
 
@@ -503,8 +453,7 @@ h3 {
 
   .hero-content,
   .profile-panel,
-  .section,
-  .contact-section {
+  .section {
     padding: 18px;
   }
 
@@ -516,8 +465,7 @@ h3 {
     font-size: 28px;
   }
 
-  .hero-actions,
-  .contact-actions {
+  .hero-actions {
     display: grid;
     grid-template-columns: 1fr;
   }

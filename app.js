@@ -1,25 +1,21 @@
-const copyEmailButton = document.querySelector("#copyEmail");
 const lastUpdated = document.querySelector("#lastUpdated");
-const toast = document.querySelector("#toast");
 const languageButtons = document.querySelectorAll(".language-button");
 
 const translations = {
   ja: {
-    metaDescription: "日本での安定した生活、学習習慣、適応力、連絡先を伝える個人ページ。",
+    metaDescription: "日本での安定した生活、学習習慣、適応力を伝える個人ページ。",
     pageTitle: "個人ページ",
     brandAria: "トップへ戻る",
     brand: "個人ページ",
     navAria: "ページ内ナビゲーション",
     navLearning: "学習",
     navValues: "価値観",
-    navContact: "連絡",
     heroActionsAria: "主な操作",
     profileAria: "個人概要",
     heroTitle: "こんにちは。私は日本で誠実に生活し、学び続けています。",
     heroCopy:
       "このページは履歴書だけでは伝わりにくい、私の生活状況、学習習慣、適応力、長く安定して働きたい姿勢を補足するためのものです。",
     heroPrimary: "学習を見る",
-    heroSecondary: "連絡する",
     avatar: "生",
     profileLabel: "現在の状態",
     profileTitle: "安定した生活 / 継続的な学習 / 長期的な成長",
@@ -59,30 +55,22 @@ const translations = {
     value6: "分かりやすいコミュニケーション",
     value7: "長期的な計画",
     value8: "責任感",
-    contactTitle: "連絡先",
-    contactCopy: "詳しい職務情報や個人情報は履歴書に記載しています。このページでは、連絡しやすいようにシンプルな連絡先だけを置いています。",
-    copyEmail: "メールをコピー",
-    copiedEmail: "メールアドレスをコピーしました",
-    emailLabel: "メール：",
-    backToTop: "トップへ戻る",
     footerLeft: "個人ページ",
     footerRight: "安定した生活、継続的な学習",
   },
   zh: {
-    metaDescription: "个人主页，展示在日本的稳定生活、学习习惯、适应能力和联系方式。",
+    metaDescription: "个人主页，展示在日本的稳定生活、学习习惯和适应能力。",
     pageTitle: "个人主页",
     brandAria: "返回顶部",
     brand: "个人主页",
     navAria: "页面导航",
     navLearning: "学习",
     navValues: "价值观",
-    navContact: "联系",
     heroActionsAria: "主要操作",
     profileAria: "个人摘要",
     heroTitle: "你好，我在日本认真生活，也在持续学习。",
     heroCopy: "这个网页用来补充简历之外的信息：我的生活状态、学习习惯、适应能力和长期稳定发展的态度。",
     heroPrimary: "查看学习记录",
-    heroSecondary: "联系我",
     avatar: "生",
     profileLabel: "当前状态",
     profileTitle: "稳定生活 / 持续学习 / 长期发展",
@@ -121,31 +109,23 @@ const translations = {
     value6: "清楚沟通",
     value7: "长期计划",
     value8: "责任感",
-    contactTitle: "联系我",
-    contactCopy: "简历中已经有详细的工作和个人资料。这里保留简单联系方式，方便对方快速联系。",
-    copyEmail: "复制邮箱",
-    copiedEmail: "邮箱已复制",
-    emailLabel: "邮箱：",
-    backToTop: "回到顶部",
     footerLeft: "个人主页",
     footerRight: "稳定生活，持续学习",
   },
   en: {
-    metaDescription: "A personal page showing stable life in Japan, learning habits, adaptability, and contact information.",
+    metaDescription: "A personal page showing stable life in Japan, learning habits, and adaptability.",
     pageTitle: "Personal Page",
     brandAria: "Back to top",
     brand: "Personal Page",
     navAria: "Page navigation",
     navLearning: "Learning",
     navValues: "Values",
-    navContact: "Contact",
     heroActionsAria: "Main actions",
     profileAria: "Personal summary",
     heroTitle: "Hello, I live steadily in Japan and continue learning every day.",
     heroCopy:
       "This page adds context beyond my resume: my life stability, learning habits, adaptability, and intention to grow steadily over the long term.",
     heroPrimary: "View learning",
-    heroSecondary: "Contact me",
     avatar: "Life",
     profileLabel: "Current status",
     profileTitle: "Stable life / Continuous learning / Long-term growth",
@@ -185,12 +165,6 @@ const translations = {
     value6: "Clear communication",
     value7: "Long-term planning",
     value8: "Responsibility",
-    contactTitle: "Contact",
-    contactCopy: "My resume contains detailed work and personal information. This page keeps contact simple so companies can reach me quickly.",
-    copyEmail: "Copy email",
-    copiedEmail: "Email copied",
-    emailLabel: "Email: ",
-    backToTop: "Back to top",
     footerLeft: "Personal Page",
     footerRight: "Stable life, continuous learning",
   },
@@ -200,16 +174,6 @@ let currentLanguage = localStorage.getItem("preferredLanguage") || "ja";
 
 function t(key) {
   return translations[currentLanguage][key] || translations.ja[key] || "";
-}
-
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add("visible");
-
-  window.clearTimeout(showToast.timer);
-  showToast.timer = window.setTimeout(() => {
-    toast.classList.remove("visible");
-  }, 2200);
 }
 
 function updateLastModified() {
@@ -253,20 +217,8 @@ function applyLanguage(language) {
   updateLastModified();
 }
 
-async function copyEmail() {
-  const email = copyEmailButton.dataset.email;
-
-  try {
-    await navigator.clipboard.writeText(email);
-    showToast(t("copiedEmail"));
-  } catch (_error) {
-    showToast(`${t("emailLabel")}${email}`);
-  }
-}
-
 languageButtons.forEach((button) => {
   button.addEventListener("click", () => applyLanguage(button.dataset.lang));
 });
 
-copyEmailButton.addEventListener("click", copyEmail);
 applyLanguage(currentLanguage);
