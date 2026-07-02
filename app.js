@@ -4,7 +4,11 @@ const languageButtons = document.querySelectorAll(".language-button");
 const translations = {
   ja: {
     metaDescription: "日本での安定した生活、学習習慣、適応力を伝える個人ページ。",
+    lifeMetaDescription: "生活と学習について記録するページ。",
+    aiMetaDescription: "AI活用について記録するページ。",
     pageTitle: "個人ページ",
+    lifePageTitle: "生活と学習",
+    aiPageTitle: "AI活用",
     brandAria: "トップへ戻る",
     brand: "個人ページ",
     navAria: "ページ内ナビゲーション",
@@ -71,10 +75,33 @@ const translations = {
     value8: "責任感",
     footerLeft: "個人ページ",
     footerRight: "安定した生活、継続的な学習",
+    backHome: "トップページへ戻る",
+    lifeDetailTitle: "生活と学習の記録",
+    lifeDetailCopy: "ここには、日々の生活、学習習慣、言語の練習、長く安定して働くために続けていることを書いていきます。",
+    lifeStoryTitle: "これから書いていく内容",
+    lifeBlock1Title: "生活の安定",
+    lifeBlock1Copy: "熊本での生活リズム、健康管理、時間の使い方など、安定して働く土台になることを記録します。",
+    lifeBlock2Title: "学習の継続",
+    lifeBlock2Copy: "日本語、仕事への理解、基礎スキルなど、毎日少しずつ続けている学習を書いていきます。",
+    lifeBlock3Title: "気づきと改善",
+    lifeBlock3Copy: "生活や学習の中で気づいたこと、改善したこと、次に試したいことを整理します。",
+    aiDetailTitle: "AIをどう活用しているか",
+    aiDetailCopy: "ここには、AIを使って考えを整理し、生活や学習を改善し、小さな成果につなげていく過程を書いていきます。",
+    aiStoryTitle: "これから書いていく内容",
+    aiBlock1Title: "考えの整理",
+    aiBlock1Copy: "自分の考え、悩み、やることをAIと一緒に整理し、行動しやすい形にしています。",
+    aiBlock2Title: "生活への活用",
+    aiBlock2Copy: "予定、習慣、学習内容を小さく分け、続けやすい仕組みにするためにAIを使っています。",
+    aiBlock3Title: "作った成果",
+    aiBlock3Copy: "このWebページのように、要件整理、文章作成、画面設計、実装確認までAIと進めた成果を書いていきます。",
   },
   zh: {
     metaDescription: "个人主页，展示在日本的稳定生活、学习习惯和适应能力。",
+    lifeMetaDescription: "记录生活与学习的页面。",
+    aiMetaDescription: "记录 AI 使用方式的页面。",
     pageTitle: "个人主页",
+    lifePageTitle: "生活与学习",
+    aiPageTitle: "AI 使用",
     brandAria: "返回顶部",
     brand: "个人主页",
     navAria: "页面导航",
@@ -137,10 +164,33 @@ const translations = {
     value8: "责任感",
     footerLeft: "个人主页",
     footerRight: "稳定生活，持续学习",
+    backHome: "返回首页",
+    lifeDetailTitle: "生活与学习记录",
+    lifeDetailCopy: "这里会用来写日常生活、学习习惯、语言练习，以及为了长期稳定工作而持续做的事情。",
+    lifeStoryTitle: "之后会写的内容",
+    lifeBlock1Title: "生活的稳定",
+    lifeBlock1Copy: "记录在熊本的生活节奏、健康管理、时间使用等支撑稳定工作的基础。",
+    lifeBlock2Title: "学习的持续",
+    lifeBlock2Copy: "记录日语、工作理解、基础技能等每天一点点持续学习的内容。",
+    lifeBlock3Title: "发现与改善",
+    lifeBlock3Copy: "整理生活和学习中发现的问题、已经改善的地方，以及下一步想尝试的事情。",
+    aiDetailTitle: "我是如何使用 AI 的",
+    aiDetailCopy: "这里会写我如何用 AI 整理想法、改善生活和学习，并逐步做出小成果。",
+    aiStoryTitle: "之后会写的内容",
+    aiBlock1Title: "整理想法",
+    aiBlock1Copy: "我会和 AI 一起整理自己的想法、烦恼和待办事项，让它们变成更容易行动的形式。",
+    aiBlock2Title: "用于生活",
+    aiBlock2Copy: "我用 AI 把计划、习惯和学习内容拆小，变成更容易持续的机制。",
+    aiBlock3Title: "做出的成果",
+    aiBlock3Copy: "例如这个网页，我会记录如何通过 AI 完成需求整理、文案、页面设计、实现和确认修改。",
   },
   en: {
     metaDescription: "A personal page showing stable life in Japan, learning habits, and adaptability.",
+    lifeMetaDescription: "A page for recording life and learning.",
+    aiMetaDescription: "A page for recording how I use AI.",
     pageTitle: "Personal Page",
+    lifePageTitle: "Life and Learning",
+    aiPageTitle: "AI Use",
     brandAria: "Back to top",
     brand: "Personal Page",
     navAria: "Page navigation",
@@ -207,6 +257,25 @@ const translations = {
     value8: "Responsibility",
     footerLeft: "Personal Page",
     footerRight: "Stable life, continuous learning",
+    backHome: "Back to top page",
+    lifeDetailTitle: "Life and Learning Notes",
+    lifeDetailCopy: "This page will hold notes about daily life, learning habits, language practice, and the steady effort behind long-term work.",
+    lifeStoryTitle: "What I Will Add Here",
+    lifeBlock1Title: "Stable Life",
+    lifeBlock1Copy: "I will record my life rhythm in Kumamoto, health habits, time management, and the foundation for stable work.",
+    lifeBlock2Title: "Continuous Learning",
+    lifeBlock2Copy: "I will write about Japanese, workplace understanding, basic skills, and the learning I continue little by little.",
+    lifeBlock3Title: "Noticing and Improving",
+    lifeBlock3Copy: "I will organize what I notice in daily life and learning, what I improve, and what I want to try next.",
+    aiDetailTitle: "How I Use AI",
+    aiDetailCopy: "This page will describe how I use AI to organize thoughts, improve life and learning, and turn small steps into outcomes.",
+    aiStoryTitle: "What I Will Add Here",
+    aiBlock1Title: "Organizing Thoughts",
+    aiBlock1Copy: "I use AI to sort out my thoughts, concerns, and tasks so they become easier to act on.",
+    aiBlock2Title: "Using AI in Daily Life",
+    aiBlock2Copy: "I use AI to break plans, habits, and learning into smaller systems that are easier to continue.",
+    aiBlock3Title: "Outcomes I Create",
+    aiBlock3Copy: "For example, I will record how this website was shaped through requirements, writing, interface planning, implementation, and review.",
   },
 };
 
@@ -217,6 +286,10 @@ function t(key) {
 }
 
 function updateLastModified() {
+  if (!lastUpdated) {
+    return;
+  }
+
   const modified = new Date(document.lastModified);
 
   if (Number.isNaN(modified.getTime())) {
@@ -248,7 +321,8 @@ function applyLanguage(language) {
     });
   });
 
-  document.title = t("pageTitle");
+  const titleElement = document.querySelector("title[data-i18n]");
+  document.title = titleElement ? t(titleElement.dataset.i18n) : t("pageTitle");
   languageButtons.forEach((button) => {
     const isActive = button.dataset.lang === currentLanguage;
     button.classList.toggle("active", isActive);

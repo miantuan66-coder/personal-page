@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="生活と学習について記録するページ。"
+      data-i18n-attr="content:lifeMetaDescription"
+    />
+    <title data-i18n="lifePageTitle">生活と学習</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="トップへ戻る" data-i18n-attr="aria-label:brandAria">
+        <span class="brand-mark">CD</span>
+        <span data-i18n="brand">個人ページ</span>
+      </a>
+      <nav class="nav" aria-label="ページ内ナビゲーション" data-i18n-attr="aria-label:navAria">
+        <a href="./ai.html" data-i18n="navAi">AI活用</a>
+        <a href="./life-learning.html" data-i18n="navLearning">学習</a>
+        <a href="./#values" data-i18n="navValues">価値観</a>
+      </nav>
+      <div class="language-switcher" aria-label="Language selector">
+        <button class="language-button active" type="button" data-lang="ja">日本語</button>
+        <button class="language-button" type="button" data-lang="zh">中文</button>
+        <button class="language-button" type="button" data-lang="en">English</button>
+      </div>
+    </header>
+
+    <main id="top" class="detail-page">
+      <section class="detail-hero">
+        <p class="eyebrow">Life & Learning</p>
+        <h1 data-i18n="lifeDetailTitle">生活と学習の記録</h1>
+        <p class="detail-copy" data-i18n="lifeDetailCopy">
+          ここには、日々の生活、学習習慣、言語の練習、長く安定して働くために続けていることを書いていきます。
+        </p>
+      </section>
+
+      <section class="section detail-section" aria-labelledby="life-story-title">
+        <div class="section-heading split">
+          <div>
+            <p class="eyebrow">Journal</p>
+            <h2 id="life-story-title" data-i18n="lifeStoryTitle">これから書いていく内容</h2>
+          </div>
+          <p id="lastUpdated" data-i18n="lastUpdatedLoading">最終更新：読み込み中</p>
+        </div>
+        <div class="detail-list">
+          <article>
+            <h3 data-i18n="lifeBlock1Title">生活の安定</h3>
+            <p data-i18n="lifeBlock1Copy">熊本での生活リズム、健康管理、時間の使い方など、安定して働く土台になることを記録します。</p>
+          </article>
+          <article>
+            <h3 data-i18n="lifeBlock2Title">学習の継続</h3>
+            <p data-i18n="lifeBlock2Copy">日本語、仕事への理解、基礎スキルなど、毎日少しずつ続けている学習を書いていきます。</p>
+          </article>
+          <article>
+            <h3 data-i18n="lifeBlock3Title">気づきと改善</h3>
+            <p data-i18n="lifeBlock3Copy">生活や学習の中で気づいたこと、改善したこと、次に試したいことを整理します。</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span data-i18n="footerLeft">個人ページ</span>
+      <a href="./" data-i18n="backHome">トップページへ戻る</a>
+    </footer>
+
+    <script src="./app.js"></script>
+  </body>
+</html>
