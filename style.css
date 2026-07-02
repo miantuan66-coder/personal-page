@@ -242,23 +242,29 @@ h3 {
   padding: 26px;
 }
 
-.avatar {
-  display: grid;
-  width: 96px;
-  height: 96px;
-  place-items: center;
-  color: #fff;
-  background: linear-gradient(135deg, var(--brand), var(--blue));
-  border-radius: 8px;
-  font-size: 42px;
-  font-weight: 900;
-}
-
 .panel-label {
   margin-bottom: 6px;
   color: var(--brand);
   font-size: 13px;
   font-weight: 900;
+}
+
+.profile-keywords {
+  display: grid;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+.profile-keywords span {
+  display: block;
+  padding: 11px 13px;
+  color: var(--text);
+  background: #f6faf9;
+  border: 1px solid #cbdadb;
+  border-radius: 8px;
+  font-size: clamp(22px, 2.2vw, 30px);
+  font-weight: 900;
+  line-height: 1.18;
 }
 
 .profile-panel p,
