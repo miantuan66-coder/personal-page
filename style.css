@@ -549,14 +549,25 @@ h3 {
 }
 
 .update-section {
+  margin-top: 14px;
+  padding: clamp(16px, 3vw, 24px);
   background: #f9fbfb;
 }
 
-.update-section p {
-  max-width: 820px;
+.update-section .section-heading {
+  margin-bottom: 12px;
+}
+
+.update-section h2 {
   margin-bottom: 8px;
+  font-size: clamp(22px, 3vw, 30px);
+}
+
+.update-section p {
+  max-width: 760px;
+  margin-bottom: 6px;
   color: var(--muted);
-  font-size: clamp(16px, 2vw, 19px);
+  font-size: clamp(14px, 1.6vw, 16px);
   font-weight: 750;
 }
 
