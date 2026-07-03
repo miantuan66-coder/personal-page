@@ -60,8 +60,10 @@ const noteUiText = {
     noteTitle: "タイトル",
     noteBody: "説明文",
     image: "写真を選ぶ",
+    imageEmpty: "写真を複数選べます",
     imageAlt: "追加した写真",
-    removeImage: "写真を削除",
+    removeImage: "写真をすべて削除",
+    removeSingleImage: "削除",
     deleteNote: "この記録を削除",
     placeholderTitle: "例：朝の学習メモ",
     placeholderBody: "写真の内容、気づいたこと、次に試したいことを書きます。",
@@ -75,8 +77,10 @@ const noteUiText = {
     noteTitle: "标题",
     noteBody: "说明文字",
     image: "选择照片",
+    imageEmpty: "可以选择多张照片",
     imageAlt: "已添加的照片",
-    removeImage: "删除照片",
+    removeImage: "删除全部照片",
+    removeSingleImage: "删除",
     deleteNote: "删除这条记录",
     placeholderTitle: "例：早上的学习笔记",
     placeholderBody: "写下照片内容、发现的事情、下一步想尝试的事情。",
@@ -90,8 +94,10 @@ const noteUiText = {
     noteTitle: "Title",
     noteBody: "Description",
     image: "Choose photo",
+    imageEmpty: "You can choose multiple photos",
     imageAlt: "Added photo",
-    removeImage: "Remove photo",
+    removeImage: "Remove all photos",
+    removeSingleImage: "Remove",
     deleteNote: "Delete this note",
     placeholderTitle: "Example: Morning study note",
     placeholderBody: "Write what the photo shows, what you noticed, and what you want to try next.",
@@ -135,8 +141,16 @@ function createNote() {
     id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
     title: "",
     body: "",
-    image: "",
+    images: [],
   };
+}
+
+function getNoteImages(note) {
+  if (Array.isArray(note.images)) {
+    return note.images;
+  }
+
+  return note.image ? [note.image] : [];
 }
 
 function resizeImage(file) {
@@ -196,13 +210,28 @@ function renderNotes() {
 
     const imageWrap = document.createElement("div");
     imageWrap.className = "note-image-box";
-    if (note.image) {
-      const image = document.createElement("img");
-      image.src = note.image;
-      image.alt = ui.imageAlt;
-      imageWrap.append(image);
+    const images = getNoteImages(note);
+    if (images.length > 0) {
+      imageWrap.classList.add("has-images");
+      images.forEach((imageSrc, imageIndex) => {
+        const imageItem = document.createElement("div");
+        imageItem.className = "note-image-item";
+        const image = document.createElement("img");
+        image.src = imageSrc;
+        image.alt = ui.imageAlt;
+        const removeSingleButton = document.createElement("button");
+        removeSingleButton.type = "button";
+        removeSingleButton.textContent = ui.removeSingleImage;
+        removeSingleButton.addEventListener("click", () => {
+          const nextImages = getNoteImages(loadNotes()[index]).filter((_, currentIndex) => currentIndex !== imageIndex);
+          updateNote({ image: "", images: nextImages });
+          renderNotes();
+        });
+        imageItem.append(image, removeSingleButton);
+        imageWrap.append(imageItem);
+      });
     } else {
-      imageWrap.textContent = ui.image;
+      imageWrap.textContent = ui.imageEmpty;
     }
 
     const titleLabel = document.createElement("label");
@@ -222,6 +251,7 @@ function renderNotes() {
     const fileInput = document.createElement("input");
     fileInput.type = "file";
     fileInput.accept = "image/*";
+    fileInput.multiple = true;
 
     const actions = document.createElement("div");
     actions.className = "note-actions";
@@ -244,16 +274,16 @@ function renderNotes() {
     titleInput.addEventListener("input", () => updateNote({ title: titleInput.value }));
     bodyInput.addEventListener("input", () => updateNote({ body: bodyInput.value }));
     fileInput.addEventListener("change", async () => {
-      const file = fileInput.files[0];
-      if (!file) {
+      const files = Array.from(fileInput.files);
+      if (files.length === 0) {
         return;
       }
-      const image = await resizeImage(file);
-      updateNote({ image });
+      const newImages = await Promise.all(files.map((file) => resizeImage(file)));
+      updateNote({ image: "", images: [...getNoteImages(loadNotes()[index]), ...newImages] });
       renderNotes();
     });
     removeImageButton.addEventListener("click", () => {
-      updateNote({ image: "" });
+      updateNote({ image: "", images: [] });
       renderNotes();
     });
     deleteButton.addEventListener("click", () => {

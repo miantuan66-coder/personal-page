@@ -614,10 +614,45 @@ h3 {
   font-weight: 900;
 }
 
-.note-image-box img {
+.note-image-box.has-images {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: start;
+  gap: 8px;
+  padding: 8px;
+  place-items: stretch;
+}
+
+.note-image-item {
+  position: relative;
+  min-height: 138px;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: 7px;
+}
+
+.note-image-item img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.note-image-item button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  min-height: 30px;
+  padding: 5px 9px;
+  color: #fff;
+  background: rgba(24, 32, 38, 0.76);
+  border: 0;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.note-image-item button:hover {
+  background: rgba(24, 32, 38, 0.9);
 }
 
 .note-card label {
