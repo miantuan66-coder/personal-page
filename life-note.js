@@ -73,6 +73,7 @@ const noteUiText = {
     importError: "バックアップを読み込めませんでした",
     clearConfirm: "このページの記録をすべて削除しますか？",
     imageError: "一部の写真を表示できませんでした。HEICの場合はJPG/PNGに変換してから選んでください。",
+    heicUnsupported: "HEIC写真はこの編集画面では安定して保存できません。JPG/PNGに変換してから選んでください。",
     storageError: "保存容量が足りません。写真を減らすか、JPGに変換してからもう一度試してください。",
     placeholderTitle: "例：朝の学習メモ",
     placeholderBody: "写真の内容、気づいたこと、次に試したいことを書きます。",
@@ -99,6 +100,7 @@ const noteUiText = {
     importError: "无法导入备份",
     clearConfirm: "要删除这个页面里的所有记录吗？",
     imageError: "有些照片无法显示。如果是 HEIC，请先转换成 JPG/PNG 后再选择。",
+    heicUnsupported: "HEIC 照片无法在这个编辑画面里稳定保存。请先转换成 JPG/PNG 后再选择。",
     storageError: "浏览器保存空间不够。请减少照片数量，或先转成 JPG 后再试。",
     placeholderTitle: "例：早上的学习笔记",
     placeholderBody: "写下照片内容、发现的事情、下一步想尝试的事情。",
@@ -125,6 +127,7 @@ const noteUiText = {
     importError: "Could not import backup",
     clearConfirm: "Delete all notes on this page?",
     imageError: "Some photos could not be displayed. If they are HEIC files, convert them to JPG/PNG first.",
+    heicUnsupported: "HEIC photos cannot be saved reliably in this editor. Convert them to JPG/PNG first.",
     storageError: "There is not enough browser storage. Use fewer photos or convert them to JPG first.",
     placeholderTitle: "Example: Morning study note",
     placeholderBody: "Write what the photo shows, what you noticed, and what you want to try next.",
@@ -185,7 +188,7 @@ function showStatus(message) {
   window.clearTimeout(saveStatus.timeoutId);
   saveStatus.timeoutId = window.setTimeout(() => {
     saveStatus.textContent = "";
-  }, 1800);
+  }, 5200);
 }
 
 function createNote() {
@@ -328,7 +331,7 @@ function renderNotes() {
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
-    fileInput.accept = "image/*,.heic,.heif";
+    fileInput.accept = "image/jpeg,image/png,image/webp";
     fileInput.multiple = true;
 
     const actions = document.createElement("div");
@@ -346,7 +349,7 @@ function renderNotes() {
     function updateNote(updates) {
       const nextNotes = loadNotes();
       nextNotes[index] = { ...nextNotes[index], ...updates };
-      saveNotes(nextNotes);
+      return saveNotes(nextNotes);
     }
 
     titleInput.addEventListener("input", () => updateNote({ title: titleInput.value }));
@@ -356,14 +359,20 @@ function renderNotes() {
       if (files.length === 0) {
         return;
       }
+      const ui = noteUiText[activeLanguage()];
+      if (files.some((file) => isHeicFile(file))) {
+        showStatus(ui.heicUnsupported);
+        return;
+      }
       try {
         const newImages = await Promise.all(files.map((file) => resizeImage(file)));
-        updateNote({ image: "", images: [...getNoteImages(loadNotes()[index]), ...newImages] });
-        renderNotes();
+        const saved = updateNote({ image: "", images: [...getNoteImages(loadNotes()[index]), ...newImages] });
+        if (saved) {
+          fileInput.value = "";
+          renderNotes();
+        }
       } catch {
-        showStatus(noteUiText[activeLanguage()].imageError);
-      } finally {
-        fileInput.value = "";
+        showStatus(ui.imageError);
       }
     });
     removeImageButton.addEventListener("click", () => {
