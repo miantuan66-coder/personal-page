@@ -294,6 +294,7 @@ function renderNotes() {
     const images = getNoteImages(note);
     if (images.length > 0) {
       imageWrap.classList.add("has-images");
+      imageWrap.classList.add(`image-count-${Math.min(images.length, 4)}`);
       images.forEach((imageSrc, imageIndex) => {
         const imageItem = document.createElement("div");
         imageItem.className = "note-image-item";
