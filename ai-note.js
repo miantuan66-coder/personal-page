@@ -209,8 +209,11 @@ function updateAiNoteLanguage() {
   document.querySelector(".note-editor .eyebrow").textContent = isAiEditMode ? "Edit" : ui.viewEyebrow;
   document.querySelector("#ai-editor-title").textContent = isAiEditMode ? ui.editorTitle : ui.viewTitle;
   document.querySelector("#ai-editor-help").textContent = isAiEditMode ? ui.help : "";
-  document.querySelector(".editor-actions").hidden = !isAiEditMode;
-  if (isAiEditMode) {
+  const editorActions = document.querySelector(".editor-actions");
+  if (editorActions) {
+    editorActions.hidden = !isAiEditMode;
+  }
+  if (isAiEditMode && aiAddButton && aiExportButton && aiImportButton && aiClearButton) {
     aiAddButton.textContent = ui.add;
     aiExportButton.textContent = ui.exportNote;
     aiImportButton.textContent = ui.importNote;
@@ -409,62 +412,64 @@ function renderAiNotes() {
   });
 }
 
-aiAddButton.addEventListener("click", () => {
-  const notes = loadAiNotes();
-  notes.unshift(createAiNote());
-  saveAiNotes(notes);
-  renderAiNotes();
-});
-
-aiExportButton.addEventListener("click", () => {
-  const payload = {
-    version: 2,
-    type: aiNoteType,
-    exportedAt: new Date().toISOString(),
-    notes: loadAiNotes(),
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `personal-page-ai-${aiNoteType}-backup.json`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-});
-
-aiImportInput.addEventListener("change", () => {
-  const file = aiImportInput.files[0];
-  const ui = aiNoteText[currentAiLanguage()];
-  if (!file) {
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    try {
-      const payload = JSON.parse(reader.result);
-      if (payload.type && payload.type !== aiNoteType) {
-        throw new Error("Backup type does not match this page");
-      }
-      saveAiNotes(normalizeAiNotes(payload));
-      renderAiNotes();
-      showAiStatus(ui.importDone);
-    } catch {
-      showAiStatus(ui.importError);
-    } finally {
-      aiImportInput.value = "";
-    }
+if (isAiEditMode && aiAddButton && aiExportButton && aiImportInput && aiClearButton) {
+  aiAddButton.addEventListener("click", () => {
+    const notes = loadAiNotes();
+    notes.unshift(createAiNote());
+    saveAiNotes(notes);
+    renderAiNotes();
   });
-  reader.readAsText(file);
-});
 
-aiClearButton.addEventListener("click", () => {
-  const ui = aiNoteText[currentAiLanguage()];
-  if (!window.confirm(ui.clearConfirm)) {
-    return;
-  }
-  localStorage.removeItem(aiStorageKey);
-  renderAiNotes();
-});
+  aiExportButton.addEventListener("click", () => {
+    const payload = {
+      version: 2,
+      type: aiNoteType,
+      exportedAt: new Date().toISOString(),
+      notes: loadAiNotes(),
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `personal-page-ai-${aiNoteType}-backup.json`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+
+  aiImportInput.addEventListener("change", () => {
+    const file = aiImportInput.files[0];
+    const ui = aiNoteText[currentAiLanguage()];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      try {
+        const payload = JSON.parse(reader.result);
+        if (payload.type && payload.type !== aiNoteType) {
+          throw new Error("Backup type does not match this page");
+        }
+        saveAiNotes(normalizeAiNotes(payload));
+        renderAiNotes();
+        showAiStatus(ui.importDone);
+      } catch {
+        showAiStatus(ui.importError);
+      } finally {
+        aiImportInput.value = "";
+      }
+    });
+    reader.readAsText(file);
+  });
+
+  aiClearButton.addEventListener("click", () => {
+    const ui = aiNoteText[currentAiLanguage()];
+    if (!window.confirm(ui.clearConfirm)) {
+      return;
+    }
+    localStorage.removeItem(aiStorageKey);
+    renderAiNotes();
+  });
+}
 
 document.querySelectorAll(".language-button").forEach((button) => {
   button.addEventListener("click", () => window.setTimeout(renderAiNotes, 0));

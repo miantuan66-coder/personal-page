@@ -321,8 +321,11 @@ function updateHeader() {
   document.querySelector("#note-editor-eyebrow").textContent = isEditMode ? ui.editorEyebrow : ui.viewEyebrow;
   document.querySelector("#note-editor-title").textContent = isEditMode ? ui.editorTitle : ui.viewTitle;
   document.querySelector("#editor-help").textContent = isEditMode ? ui.help : "";
-  document.querySelector(".editor-actions").hidden = !isEditMode;
-  if (isEditMode) {
+  const editorActions = document.querySelector(".editor-actions");
+  if (editorActions) {
+    editorActions.hidden = !isEditMode;
+  }
+  if (isEditMode && addButton && exportButton && importButton && clearButton) {
     addButton.textContent = ui.add;
     exportButton.textContent = ui.exportNotes;
     importButton.textContent = ui.importNotes;
@@ -497,63 +500,65 @@ function renderNotes() {
   });
 }
 
-addButton.addEventListener("click", () => {
-  const notes = loadNotes();
-  notes.unshift(createNote());
-  saveNotes(notes);
-  renderNotes();
-});
-
-exportButton.addEventListener("click", () => {
-  const payload = {
-    version: 1,
-    type: noteType,
-    exportedAt: new Date().toISOString(),
-    notes: loadNotes(),
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = `personal-page-${noteType}-backup.json`;
-  link.click();
-  URL.revokeObjectURL(link.href);
-});
-
-importInput.addEventListener("change", () => {
-  const file = importInput.files[0];
-  const ui = noteUiText[activeLanguage()];
-  if (!file) {
-    return;
-  }
-
-  const reader = new FileReader();
-  reader.addEventListener("load", () => {
-    try {
-      const payload = JSON.parse(reader.result);
-      const notes = Array.isArray(payload) ? payload : payload.notes;
-      if (!Array.isArray(notes)) {
-        throw new Error("Invalid backup");
-      }
-      saveNotes(notes);
-      renderNotes();
-      showStatus(ui.importDone);
-    } catch {
-      showStatus(ui.importError);
-    } finally {
-      importInput.value = "";
-    }
+if (isEditMode && addButton && exportButton && importInput && clearButton) {
+  addButton.addEventListener("click", () => {
+    const notes = loadNotes();
+    notes.unshift(createNote());
+    saveNotes(notes);
+    renderNotes();
   });
-  reader.readAsText(file);
-});
 
-clearButton.addEventListener("click", () => {
-  const ui = noteUiText[activeLanguage()];
-  if (!window.confirm(ui.clearConfirm)) {
-    return;
-  }
-  saveNotes([]);
-  renderNotes();
-});
+  exportButton.addEventListener("click", () => {
+    const payload = {
+      version: 1,
+      type: noteType,
+      exportedAt: new Date().toISOString(),
+      notes: loadNotes(),
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `personal-page-${noteType}-backup.json`;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  });
+
+  importInput.addEventListener("change", () => {
+    const file = importInput.files[0];
+    const ui = noteUiText[activeLanguage()];
+    if (!file) {
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      try {
+        const payload = JSON.parse(reader.result);
+        const notes = Array.isArray(payload) ? payload : payload.notes;
+        if (!Array.isArray(notes)) {
+          throw new Error("Invalid backup");
+        }
+        saveNotes(notes);
+        renderNotes();
+        showStatus(ui.importDone);
+      } catch {
+        showStatus(ui.importError);
+      } finally {
+        importInput.value = "";
+      }
+    });
+    reader.readAsText(file);
+  });
+
+  clearButton.addEventListener("click", () => {
+    const ui = noteUiText[activeLanguage()];
+    if (!window.confirm(ui.clearConfirm)) {
+      return;
+    }
+    saveNotes([]);
+    renderNotes();
+  });
+}
 
 document.querySelectorAll(".language-button").forEach((button) => {
   button.addEventListener("click", () => window.setTimeout(renderNotes, 0));
