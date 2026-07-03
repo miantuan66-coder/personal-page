@@ -19,6 +19,8 @@ const aiNoteTypes = {
 const aiNoteText = {
   ja: {
     editorTitle: "内容を編集する",
+    viewTitle: "記録を見る",
+    viewEyebrow: "Notes",
     help: "この内容は現在のブラウザに保存されます。公開する時はバックアップを書き出して共有してください。",
     add: "記録を追加",
     titleLabel: "タイトル",
@@ -43,6 +45,8 @@ const aiNoteText = {
   },
   zh: {
     editorTitle: "编辑内容",
+    viewTitle: "查看记录",
+    viewEyebrow: "记录",
     help: "内容会保存在当前浏览器。需要公开时，请导出备份发给我，我再整理进正式网页。",
     add: "添加记录",
     titleLabel: "标题",
@@ -67,6 +71,8 @@ const aiNoteText = {
   },
   en: {
     editorTitle: "Edit Content",
+    viewTitle: "View Notes",
+    viewEyebrow: "Notes",
     help: "This content is saved in this browser. Export a backup when you want me to publish it on the public page.",
     add: "Add note",
     titleLabel: "Title",
@@ -93,6 +99,7 @@ const aiNoteText = {
 
 const params = new URLSearchParams(window.location.search);
 const aiNoteType = aiNoteTypes[params.get("type")] ? params.get("type") : "thinking";
+const isAiEditMode = params.get("edit") === "1";
 const aiNoteList = document.querySelector("#ai-note-list");
 const aiSaveStatus = document.querySelector("#ai-save-status");
 const aiAddButton = document.querySelector("#ai-add-note");
@@ -113,6 +120,15 @@ function getAiImages(note) {
   }
 
   return note.image ? [note.image] : [];
+}
+
+function localizedAiField(note, field) {
+  const value = note[field];
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value[currentAiLanguage()] || value.ja || value.zh || value.en || "";
+  }
+
+  return value || "";
 }
 
 function createAiNote(body = "") {
@@ -149,10 +165,25 @@ function normalizeAiNotes(rawValue) {
 }
 
 function loadAiNotes() {
+  const publishedNotes = JSON.parse(JSON.stringify(window.publishedAiNotes?.[aiNoteType] || []));
+  if (!isAiEditMode) {
+    return publishedNotes;
+  }
+
   try {
-    return normalizeAiNotes(JSON.parse(localStorage.getItem(aiStorageKey)));
+    const savedNotes = normalizeAiNotes(JSON.parse(localStorage.getItem(aiStorageKey)));
+    if (savedNotes.length === 0) {
+      return publishedNotes;
+    }
+    const savedIds = new Set(savedNotes.map((note) => note.id));
+    return [...savedNotes, ...publishedNotes.filter((note) => !savedIds.has(note.id))];
   } catch {
-    return normalizeAiNotes(localStorage.getItem(aiStorageKey));
+    const savedNotes = normalizeAiNotes(localStorage.getItem(aiStorageKey));
+    if (savedNotes.length === 0) {
+      return publishedNotes;
+    }
+    const savedIds = new Set(savedNotes.map((note) => note.id));
+    return [...savedNotes, ...publishedNotes.filter((note) => !savedIds.has(note.id))];
   }
 }
 
@@ -175,12 +206,16 @@ function updateAiNoteLanguage() {
   document.querySelector("#ai-note-eyebrow").textContent = typeText[0];
   document.querySelector("#ai-note-title").textContent = typeText[1];
   document.querySelector("#ai-note-copy").textContent = typeText[2];
-  document.querySelector("#ai-editor-title").textContent = ui.editorTitle;
-  document.querySelector("#ai-editor-help").textContent = ui.help;
-  aiAddButton.textContent = ui.add;
-  aiExportButton.textContent = ui.exportNote;
-  aiImportButton.textContent = ui.importNote;
-  aiClearButton.textContent = ui.clearNote;
+  document.querySelector(".note-editor .eyebrow").textContent = isAiEditMode ? "Edit" : ui.viewEyebrow;
+  document.querySelector("#ai-editor-title").textContent = isAiEditMode ? ui.editorTitle : ui.viewTitle;
+  document.querySelector("#ai-editor-help").textContent = isAiEditMode ? ui.help : "";
+  document.querySelector(".editor-actions").hidden = !isAiEditMode;
+  if (isAiEditMode) {
+    aiAddButton.textContent = ui.add;
+    aiExportButton.textContent = ui.exportNote;
+    aiImportButton.textContent = ui.importNote;
+    aiClearButton.textContent = ui.clearNote;
+  }
   document.title = typeText[1];
 }
 
@@ -215,7 +250,7 @@ async function resizeAiImage(file) {
   });
 }
 
-function appendAiImages(imageWrap, note, ui, noteIndex) {
+function appendAiImages(imageWrap, note, ui, noteIndex, isEditable) {
   const images = getAiImages(note);
   if (images.length === 0) {
     imageWrap.textContent = ui.imageEmpty;
@@ -231,20 +266,50 @@ function appendAiImages(imageWrap, note, ui, noteIndex) {
     image.src = imageSrc;
     image.alt = ui.imageAlt;
 
-    const removeSingleButton = document.createElement("button");
-    removeSingleButton.type = "button";
-    removeSingleButton.textContent = ui.removeSingleImage;
-    removeSingleButton.addEventListener("click", () => {
-      const notes = loadAiNotes();
-      const nextImages = getAiImages(notes[noteIndex]).filter((_, currentIndex) => currentIndex !== imageIndex);
-      notes[noteIndex] = { ...notes[noteIndex], image: "", images: nextImages };
-      saveAiNotes(notes);
-      renderAiNotes();
-    });
-
-    imageItem.append(image, removeSingleButton);
+    imageItem.append(image);
+    if (isEditable) {
+      const removeSingleButton = document.createElement("button");
+      removeSingleButton.type = "button";
+      removeSingleButton.textContent = ui.removeSingleImage;
+      removeSingleButton.addEventListener("click", () => {
+        const notes = loadAiNotes();
+        const nextImages = getAiImages(notes[noteIndex]).filter((_, currentIndex) => currentIndex !== imageIndex);
+        notes[noteIndex] = { ...notes[noteIndex], image: "", images: nextImages };
+        saveAiNotes(notes);
+        renderAiNotes();
+      });
+      imageItem.append(removeSingleButton);
+    }
     imageWrap.append(imageItem);
   });
+}
+
+function renderReadonlyAiNote(note, ui) {
+  const card = document.createElement("article");
+  card.className = "note-card note-card-view";
+
+  const imageWrap = document.createElement("div");
+  imageWrap.className = "note-image-box";
+  appendAiImages(imageWrap, note, ui, 0, false);
+
+  const content = document.createElement("div");
+  content.className = "note-display-content";
+  const title = document.createElement("h3");
+  title.textContent = localizedAiField(note, "title");
+  const body = document.createElement("div");
+  body.className = "note-display-body";
+  String(localizedAiField(note, "body"))
+    .split(/\n+/)
+    .filter(Boolean)
+    .forEach((paragraphText) => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = paragraphText;
+      body.append(paragraph);
+    });
+
+  content.append(title, body);
+  card.append(imageWrap, content);
+  return card;
 }
 
 function renderAiNotes() {
@@ -262,25 +327,30 @@ function renderAiNotes() {
   }
 
   notes.forEach((note, index) => {
+    if (!isAiEditMode) {
+      aiNoteList.append(renderReadonlyAiNote(note, ui));
+      return;
+    }
+
     const card = document.createElement("article");
     card.className = "note-card";
 
     const imageWrap = document.createElement("div");
     imageWrap.className = "note-image-box";
-    appendAiImages(imageWrap, note, ui, index);
+    appendAiImages(imageWrap, note, ui, index, true);
 
     const titleLabel = document.createElement("label");
     titleLabel.textContent = ui.titleLabel;
     const titleInput = document.createElement("input");
     titleInput.type = "text";
-    titleInput.value = note.title || "";
+    titleInput.value = localizedAiField(note, "title");
     titleInput.placeholder = ui.placeholderTitle;
 
     const bodyLabel = document.createElement("label");
     bodyLabel.textContent = ui.bodyLabel;
     const bodyInput = document.createElement("textarea");
     bodyInput.rows = 5;
-    bodyInput.value = note.body || "";
+    bodyInput.value = localizedAiField(note, "body");
     bodyInput.placeholder = ui.placeholderBody;
 
     const fileInput = document.createElement("input");
