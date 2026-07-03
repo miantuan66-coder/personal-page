@@ -36,8 +36,15 @@
           <div>
             <p class="eyebrow" id="note-editor-eyebrow">Edit Notes</p>
             <h2 id="note-editor-title">写真と文章を追加する</h2>
+            <p class="editor-help" id="editor-help">この編集内容は現在のブラウザに保存されます。バックアップ用に書き出すこともできます。</p>
           </div>
-          <button class="button primary" id="add-note" type="button">記録を追加</button>
+          <div class="editor-actions">
+            <button class="button primary" id="add-note" type="button">記録を追加</button>
+            <button class="button secondary" id="export-notes" type="button">バックアップを書き出す</button>
+            <label class="button secondary import-button" for="import-notes">バックアップを読み込む</label>
+            <input id="import-notes" type="file" accept="application/json,.json" />
+            <button class="button secondary" id="clear-notes" type="button">本ページを空にする</button>
+          </div>
         </div>
         <div class="note-list" id="note-list"></div>
         <p class="save-status" id="save-status" role="status"></p>

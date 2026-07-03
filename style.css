@@ -583,6 +583,34 @@ h3 {
   margin-top: 18px;
 }
 
+.editor-help {
+  max-width: 720px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.editor-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.import-button {
+  cursor: pointer;
+}
+
+#import-notes {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .note-list {
   display: grid;
   gap: 14px;

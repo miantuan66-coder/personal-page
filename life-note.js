@@ -65,6 +65,13 @@ const noteUiText = {
     removeImage: "写真をすべて削除",
     removeSingleImage: "削除",
     deleteNote: "この記録を削除",
+    help: "この編集内容は現在のブラウザに自動保存されます。別のブラウザや端末でも使う場合は、バックアップを書き出してください。",
+    exportNotes: "バックアップを書き出す",
+    importNotes: "バックアップを読み込む",
+    clearNotes: "本ページを空にする",
+    importDone: "バックアップを読み込みました",
+    importError: "バックアップを読み込めませんでした",
+    clearConfirm: "このページの記録をすべて削除しますか？",
     placeholderTitle: "例：朝の学習メモ",
     placeholderBody: "写真の内容、気づいたこと、次に試したいことを書きます。",
     empty: "まだ記録がありません。右上のボタンから追加できます。",
@@ -82,6 +89,13 @@ const noteUiText = {
     removeImage: "删除全部照片",
     removeSingleImage: "删除",
     deleteNote: "删除这条记录",
+    help: "编辑内容会自动保存在当前浏览器。如果换浏览器或设备，请先导出备份。",
+    exportNotes: "导出备份",
+    importNotes: "导入备份",
+    clearNotes: "清空本页",
+    importDone: "已导入备份",
+    importError: "无法导入备份",
+    clearConfirm: "要删除这个页面里的所有记录吗？",
     placeholderTitle: "例：早上的学习笔记",
     placeholderBody: "写下照片内容、发现的事情、下一步想尝试的事情。",
     empty: "还没有记录。可以从右上角按钮添加。",
@@ -99,6 +113,13 @@ const noteUiText = {
     removeImage: "Remove all photos",
     removeSingleImage: "Remove",
     deleteNote: "Delete this note",
+    help: "Your edits are saved automatically in this browser. Export a backup if you want to use them in another browser or device.",
+    exportNotes: "Export backup",
+    importNotes: "Import backup",
+    clearNotes: "Clear this page",
+    importDone: "Backup imported",
+    importError: "Could not import backup",
+    clearConfirm: "Delete all notes on this page?",
     placeholderTitle: "Example: Morning study note",
     placeholderBody: "Write what the photo shows, what you noticed, and what you want to try next.",
     empty: "No notes yet. Add one from the button above.",
@@ -111,6 +132,10 @@ const noteType = noteTypes[params.get("type")] ? params.get("type") : "stable";
 const storageKey = `personalPageLifeNote:${noteType}`;
 const noteList = document.querySelector("#note-list");
 const addButton = document.querySelector("#add-note");
+const exportButton = document.querySelector("#export-notes");
+const importInput = document.querySelector("#import-notes");
+const importButton = document.querySelector(".import-button");
+const clearButton = document.querySelector("#clear-notes");
 const saveStatus = document.querySelector("#save-status");
 
 function activeLanguage() {
@@ -129,11 +154,15 @@ function loadNotes() {
 function saveNotes(notes) {
   localStorage.setItem(storageKey, JSON.stringify(notes));
   const ui = noteUiText[activeLanguage()];
-  saveStatus.textContent = ui.saved;
+  showStatus(ui.saved);
+}
+
+function showStatus(message) {
+  saveStatus.textContent = message;
   window.clearTimeout(saveStatus.timeoutId);
   saveStatus.timeoutId = window.setTimeout(() => {
     saveStatus.textContent = "";
-  }, 1600);
+  }, 1800);
 }
 
 function createNote() {
@@ -185,7 +214,11 @@ function updateHeader() {
   document.querySelector("#note-copy").textContent = typeText.copy;
   document.querySelector("#note-editor-eyebrow").textContent = ui.editorEyebrow;
   document.querySelector("#note-editor-title").textContent = ui.editorTitle;
+  document.querySelector("#editor-help").textContent = ui.help;
   addButton.textContent = ui.add;
+  exportButton.textContent = ui.exportNotes;
+  importButton.textContent = ui.importNotes;
+  clearButton.textContent = ui.clearNotes;
   document.title = typeText.title;
 }
 
@@ -301,6 +334,57 @@ addButton.addEventListener("click", () => {
   const notes = loadNotes();
   notes.unshift(createNote());
   saveNotes(notes);
+  renderNotes();
+});
+
+exportButton.addEventListener("click", () => {
+  const payload = {
+    version: 1,
+    type: noteType,
+    exportedAt: new Date().toISOString(),
+    notes: loadNotes(),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `personal-page-${noteType}-backup.json`;
+  link.click();
+  URL.revokeObjectURL(link.href);
+});
+
+importInput.addEventListener("change", () => {
+  const file = importInput.files[0];
+  const ui = noteUiText[activeLanguage()];
+  if (!file) {
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    try {
+      const payload = JSON.parse(reader.result);
+      const notes = Array.isArray(payload) ? payload : payload.notes;
+      if (!Array.isArray(notes)) {
+        throw new Error("Invalid backup");
+      }
+      saveNotes(notes);
+      renderNotes();
+      showStatus(ui.importDone);
+    } catch {
+      showStatus(ui.importError);
+    } finally {
+      importInput.value = "";
+    }
+  });
+  reader.readAsText(file);
+});
+
+clearButton.addEventListener("click", () => {
+  const ui = noteUiText[activeLanguage()];
+  if (!window.confirm(ui.clearConfirm)) {
+    return;
+  }
+  saveNotes([]);
   renderNotes();
 });
 
