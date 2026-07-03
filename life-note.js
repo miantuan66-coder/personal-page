@@ -163,25 +163,25 @@ function loadNotes() {
   const savedNotes = localStorage.getItem(storageKey);
   const publishedNotes = JSON.parse(JSON.stringify(window.publishedLifeNotes?.[noteType] || []));
   if (!savedNotes) {
-    return publishedNotes;
+    return uniqueNotes(publishedNotes);
   }
 
   try {
     const notes = JSON.parse(savedNotes) || [];
     if (notes.length === 0) {
-      return publishedNotes;
+      return uniqueNotes(publishedNotes);
     }
     const savedIds = new Set(notes.map((note) => note.id));
-    return [...notes, ...publishedNotes.filter((note) => !savedIds.has(note.id))];
+    return uniqueNotes([...notes, ...publishedNotes.filter((note) => !savedIds.has(note.id))]);
   } catch {
-    return publishedNotes;
+    return uniqueNotes(publishedNotes);
   }
 }
 
 function saveNotes(notes) {
   const ui = noteUiText[activeLanguage()];
   try {
-    localStorage.setItem(storageKey, JSON.stringify(notes));
+    localStorage.setItem(storageKey, JSON.stringify(uniqueNotes(notes)));
     showStatus(ui.saved);
     return true;
   } catch {
@@ -213,6 +213,44 @@ function getNoteImages(note) {
   }
 
   return note.image ? [note.image] : [];
+}
+
+function noteFieldSignature(value) {
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return JSON.stringify(value);
+  }
+
+  return String(value || "").trim();
+}
+
+function noteSignature(note) {
+  return JSON.stringify({
+    title: noteFieldSignature(note.title),
+    body: noteFieldSignature(note.body),
+    images: getNoteImages(note),
+  });
+}
+
+function uniqueNotes(notes) {
+  const seenIds = new Set();
+  const seenContent = new Set();
+  return notes.filter((note) => {
+    if (!note || typeof note !== "object") {
+      return false;
+    }
+
+    const id = String(note.id || "");
+    const content = noteSignature(note);
+    if ((id && seenIds.has(id)) || seenContent.has(content)) {
+      return false;
+    }
+
+    if (id) {
+      seenIds.add(id);
+    }
+    seenContent.add(content);
+    return true;
+  });
 }
 
 function localizedNoteField(note, field) {
