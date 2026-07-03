@@ -72,6 +72,7 @@ const noteUiText = {
     importDone: "バックアップを読み込みました",
     importError: "バックアップを読み込めませんでした",
     clearConfirm: "このページの記録をすべて削除しますか？",
+    imageError: "一部の写真を表示できませんでした。HEICの場合はJPG/PNGに変換してから選んでください。",
     placeholderTitle: "例：朝の学習メモ",
     placeholderBody: "写真の内容、気づいたこと、次に試したいことを書きます。",
     empty: "まだ記録がありません。右上のボタンから追加できます。",
@@ -96,6 +97,7 @@ const noteUiText = {
     importDone: "已导入备份",
     importError: "无法导入备份",
     clearConfirm: "要删除这个页面里的所有记录吗？",
+    imageError: "有些照片无法显示。如果是 HEIC，请先转换成 JPG/PNG 后再选择。",
     placeholderTitle: "例：早上的学习笔记",
     placeholderBody: "写下照片内容、发现的事情、下一步想尝试的事情。",
     empty: "还没有记录。可以从右上角按钮添加。",
@@ -120,6 +122,7 @@ const noteUiText = {
     importDone: "Backup imported",
     importError: "Could not import backup",
     clearConfirm: "Delete all notes on this page?",
+    imageError: "Some photos could not be displayed. If they are HEIC files, convert them to JPG/PNG first.",
     placeholderTitle: "Example: Morning study note",
     placeholderBody: "Write what the photo shows, what you noticed, and what you want to try next.",
     empty: "No notes yet. Add one from the button above.",
@@ -187,13 +190,35 @@ function getNoteImages(note) {
   return note.image ? [note.image] : [];
 }
 
-function resizeImage(file) {
+function isHeicFile(file) {
+  return /image\/hei(c|f)/i.test(file.type) || /\.(hei(c|f))$/i.test(file.name);
+}
+
+async function normalizeImageFile(file) {
+  if (!isHeicFile(file)) {
+    return file;
+  }
+
+  if (!window.heic2any) {
+    throw new Error("HEIC converter is not available");
+  }
+
+  const converted = await window.heic2any({
+    blob: file,
+    toType: "image/jpeg",
+    quality: 0.86,
+  });
+  return Array.isArray(converted) ? converted[0] : converted;
+}
+
+async function resizeImage(file) {
+  const imageFile = await normalizeImageFile(file);
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.addEventListener("error", reject);
     reader.addEventListener("load", () => {
       const image = new Image();
-      image.addEventListener("error", () => resolve(reader.result));
+      image.addEventListener("error", reject);
       image.addEventListener("load", () => {
         const maxSize = 1200;
         const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
@@ -206,7 +231,7 @@ function resizeImage(file) {
       });
       image.src = reader.result;
     });
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(imageFile);
   });
 }
 
@@ -316,9 +341,15 @@ function renderNotes() {
       if (files.length === 0) {
         return;
       }
-      const newImages = await Promise.all(files.map((file) => resizeImage(file)));
-      updateNote({ image: "", images: [...getNoteImages(loadNotes()[index]), ...newImages] });
-      renderNotes();
+      try {
+        const newImages = await Promise.all(files.map((file) => resizeImage(file)));
+        updateNote({ image: "", images: [...getNoteImages(loadNotes()[index]), ...newImages] });
+        renderNotes();
+      } catch {
+        showStatus(noteUiText[activeLanguage()].imageError);
+      } finally {
+        fileInput.value = "";
+      }
     });
     removeImageButton.addEventListener("click", () => {
       updateNote({ image: "", images: [] });
