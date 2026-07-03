@@ -56,6 +56,8 @@ const noteUiText = {
   ja: {
     editorEyebrow: "Edit Notes",
     editorTitle: "写真と文章を追加する",
+    viewEyebrow: "Notes",
+    viewTitle: "記録を見る",
     add: "記録を追加",
     noteTitle: "タイトル",
     noteBody: "説明文",
@@ -83,6 +85,8 @@ const noteUiText = {
   zh: {
     editorEyebrow: "编辑记录",
     editorTitle: "添加照片和文字",
+    viewEyebrow: "记录",
+    viewTitle: "查看记录",
     add: "添加记录",
     noteTitle: "标题",
     noteBody: "说明文字",
@@ -110,6 +114,8 @@ const noteUiText = {
   en: {
     editorEyebrow: "Edit Notes",
     editorTitle: "Add photos and writing",
+    viewEyebrow: "Notes",
+    viewTitle: "View Notes",
     add: "Add note",
     noteTitle: "Title",
     noteBody: "Description",
@@ -138,6 +144,7 @@ const noteUiText = {
 
 const params = new URLSearchParams(window.location.search);
 const noteType = noteTypes[params.get("type")] ? params.get("type") : "stable";
+const isEditMode = params.get("edit") === "1";
 const storageKey = `personalPageLifeNote:${noteType}`;
 const noteList = document.querySelector("#note-list");
 const addButton = document.querySelector("#add-note");
@@ -269,14 +276,80 @@ function updateHeader() {
   document.querySelector("#note-eyebrow").textContent = typeText.eyebrow;
   document.querySelector("#note-title").textContent = typeText.title;
   document.querySelector("#note-copy").textContent = typeText.copy;
-  document.querySelector("#note-editor-eyebrow").textContent = ui.editorEyebrow;
-  document.querySelector("#note-editor-title").textContent = ui.editorTitle;
-  document.querySelector("#editor-help").textContent = ui.help;
-  addButton.textContent = ui.add;
-  exportButton.textContent = ui.exportNotes;
-  importButton.textContent = ui.importNotes;
-  clearButton.textContent = ui.clearNotes;
+  document.querySelector("#note-editor-eyebrow").textContent = isEditMode ? ui.editorEyebrow : ui.viewEyebrow;
+  document.querySelector("#note-editor-title").textContent = isEditMode ? ui.editorTitle : ui.viewTitle;
+  document.querySelector("#editor-help").textContent = isEditMode ? ui.help : "";
+  document.querySelector(".editor-actions").hidden = !isEditMode;
+  if (isEditMode) {
+    addButton.textContent = ui.add;
+    exportButton.textContent = ui.exportNotes;
+    importButton.textContent = ui.importNotes;
+    clearButton.textContent = ui.clearNotes;
+  }
   document.title = typeText.title;
+}
+
+function appendNoteImages(imageWrap, note, ui, isEditable, noteIndex) {
+  const images = getNoteImages(note);
+  if (images.length === 0) {
+    imageWrap.textContent = ui.imageEmpty;
+    return;
+  }
+
+  imageWrap.classList.add("has-images");
+  imageWrap.classList.add(`image-count-${Math.min(images.length, 4)}`);
+  images.forEach((imageSrc, imageIndex) => {
+    const imageItem = document.createElement("div");
+    imageItem.className = "note-image-item";
+    const image = document.createElement("img");
+    image.src = imageSrc;
+    image.alt = ui.imageAlt;
+    imageItem.append(image);
+
+    if (isEditable) {
+      const removeSingleButton = document.createElement("button");
+      removeSingleButton.type = "button";
+      removeSingleButton.textContent = ui.removeSingleImage;
+      removeSingleButton.addEventListener("click", () => {
+        const nextImages = getNoteImages(loadNotes()[noteIndex]).filter((_, currentIndex) => currentIndex !== imageIndex);
+        const nextNotes = loadNotes();
+        nextNotes[noteIndex] = { ...nextNotes[noteIndex], image: "", images: nextImages };
+        saveNotes(nextNotes);
+        renderNotes();
+      });
+      imageItem.append(removeSingleButton);
+    }
+
+    imageWrap.append(imageItem);
+  });
+}
+
+function renderReadonlyNote(note, ui) {
+  const card = document.createElement("article");
+  card.className = "note-card note-card-view";
+
+  const imageWrap = document.createElement("div");
+  imageWrap.className = "note-image-box";
+  appendNoteImages(imageWrap, note, ui, false, 0);
+
+  const content = document.createElement("div");
+  content.className = "note-display-content";
+  const title = document.createElement("h3");
+  title.textContent = localizedNoteField(note, "title");
+  const body = document.createElement("div");
+  body.className = "note-display-body";
+  localizedNoteField(note, "body")
+    .split(/\n+/)
+    .filter(Boolean)
+    .forEach((paragraphText) => {
+      const paragraph = document.createElement("p");
+      paragraph.textContent = paragraphText;
+      body.append(paragraph);
+    });
+
+  content.append(title, body);
+  card.append(imageWrap, content);
+  return card;
 }
 
 function renderNotes() {
@@ -298,32 +371,14 @@ function renderNotes() {
     card.className = "note-card";
     card.dataset.noteId = note.id;
 
+    if (!isEditMode) {
+      noteList.append(renderReadonlyNote(note, ui));
+      return;
+    }
+
     const imageWrap = document.createElement("div");
     imageWrap.className = "note-image-box";
-    const images = getNoteImages(note);
-    if (images.length > 0) {
-      imageWrap.classList.add("has-images");
-      imageWrap.classList.add(`image-count-${Math.min(images.length, 4)}`);
-      images.forEach((imageSrc, imageIndex) => {
-        const imageItem = document.createElement("div");
-        imageItem.className = "note-image-item";
-        const image = document.createElement("img");
-        image.src = imageSrc;
-        image.alt = ui.imageAlt;
-        const removeSingleButton = document.createElement("button");
-        removeSingleButton.type = "button";
-        removeSingleButton.textContent = ui.removeSingleImage;
-        removeSingleButton.addEventListener("click", () => {
-          const nextImages = getNoteImages(loadNotes()[index]).filter((_, currentIndex) => currentIndex !== imageIndex);
-          updateNote({ image: "", images: nextImages });
-          renderNotes();
-        });
-        imageItem.append(image, removeSingleButton);
-        imageWrap.append(imageItem);
-      });
-    } else {
-      imageWrap.textContent = ui.imageEmpty;
-    }
+    appendNoteImages(imageWrap, note, ui, true, index);
 
     const titleLabel = document.createElement("label");
     titleLabel.textContent = ui.noteTitle;
