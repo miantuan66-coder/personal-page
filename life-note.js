@@ -144,8 +144,13 @@ function activeLanguage() {
 }
 
 function loadNotes() {
+  const savedNotes = localStorage.getItem(storageKey);
+  if (!savedNotes) {
+    return JSON.parse(JSON.stringify(window.publishedLifeNotes?.[noteType] || []));
+  }
+
   try {
-    return JSON.parse(localStorage.getItem(storageKey)) || [];
+    return JSON.parse(savedNotes) || [];
   } catch {
     return [];
   }
