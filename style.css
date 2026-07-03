@@ -705,6 +705,33 @@ h3 {
   resize: vertical;
 }
 
+.ai-edit-card {
+  display: grid;
+  gap: 10px;
+  padding: 16px;
+  background: #f9fbfb;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.ai-edit-card label {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.ai-edit-card textarea {
+  width: 100%;
+  padding: 12px;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 750;
+  resize: vertical;
+}
+
 .note-card input[type="file"] {
   color: var(--muted);
   font-size: 14px;

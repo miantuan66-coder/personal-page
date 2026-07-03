@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="AI活用の記録を編集するページ。" />
+    <title>AI活用の編集</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="トップへ戻る" data-i18n-attr="aria-label:brandAria">
+        <span data-i18n="brand">個人ページ</span>
+      </a>
+      <nav class="nav" aria-label="ページ内ナビゲーション" data-i18n-attr="aria-label:navAria">
+        <a href="./ai.html" data-i18n="navAi">AI活用</a>
+        <a href="./life-learning.html" data-i18n="navLearning">生活・適応力・学習</a>
+        <a href="./#values" data-i18n="navValues">価値観</a>
+      </nav>
+      <div class="language-switcher" aria-label="Language selector">
+        <button class="language-button active" type="button" data-lang="ja">日本語</button>
+        <button class="language-button" type="button" data-lang="zh">中文</button>
+        <button class="language-button" type="button" data-lang="en">English</button>
+      </div>
+    </header>
+
+    <main id="top" class="detail-page note-page">
+      <section class="detail-hero note-hero">
+        <p class="eyebrow" id="ai-note-eyebrow">AI Notes</p>
+        <h1 id="ai-note-title">考えの整理</h1>
+        <p class="detail-copy" id="ai-note-copy">AI活用について、あとで公開内容にできるように草稿を書きます。</p>
+      </section>
+
+      <section class="section note-editor" aria-labelledby="ai-editor-title">
+        <div class="section-heading split">
+          <div>
+            <p class="eyebrow">Edit</p>
+            <h2 id="ai-editor-title">内容を編集する</h2>
+            <p class="editor-help" id="ai-editor-help">この内容は現在のブラウザに保存されます。公開する時は内容を整理してページに反映します。</p>
+          </div>
+        </div>
+        <div class="ai-edit-card">
+          <label for="ai-note-body" id="ai-note-label">本文</label>
+          <textarea id="ai-note-body" rows="12" placeholder="ここに内容を書きます。"></textarea>
+          <p class="save-status" id="ai-save-status" role="status"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span data-i18n="footerLeft">個人ページ</span>
+      <a href="./ai.html" data-i18n="backHome">トップページへ戻る</a>
+    </footer>
+
+    <script src="./app.js"></script>
+    <script src="./ai-note.js"></script>
+  </body>
+</html>
