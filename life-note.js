@@ -73,6 +73,7 @@ const noteUiText = {
     importError: "バックアップを読み込めませんでした",
     clearConfirm: "このページの記録をすべて削除しますか？",
     imageError: "一部の写真を表示できませんでした。HEICの場合はJPG/PNGに変換してから選んでください。",
+    storageError: "保存容量が足りません。写真を減らすか、JPGに変換してからもう一度試してください。",
     placeholderTitle: "例：朝の学習メモ",
     placeholderBody: "写真の内容、気づいたこと、次に試したいことを書きます。",
     empty: "まだ記録がありません。右上のボタンから追加できます。",
@@ -98,6 +99,7 @@ const noteUiText = {
     importError: "无法导入备份",
     clearConfirm: "要删除这个页面里的所有记录吗？",
     imageError: "有些照片无法显示。如果是 HEIC，请先转换成 JPG/PNG 后再选择。",
+    storageError: "浏览器保存空间不够。请减少照片数量，或先转成 JPG 后再试。",
     placeholderTitle: "例：早上的学习笔记",
     placeholderBody: "写下照片内容、发现的事情、下一步想尝试的事情。",
     empty: "还没有记录。可以从右上角按钮添加。",
@@ -123,6 +125,7 @@ const noteUiText = {
     importError: "Could not import backup",
     clearConfirm: "Delete all notes on this page?",
     imageError: "Some photos could not be displayed. If they are HEIC files, convert them to JPG/PNG first.",
+    storageError: "There is not enough browser storage. Use fewer photos or convert them to JPG first.",
     placeholderTitle: "Example: Morning study note",
     placeholderBody: "Write what the photo shows, what you noticed, and what you want to try next.",
     empty: "No notes yet. Add one from the button above.",
@@ -148,21 +151,33 @@ function activeLanguage() {
 
 function loadNotes() {
   const savedNotes = localStorage.getItem(storageKey);
+  const publishedNotes = JSON.parse(JSON.stringify(window.publishedLifeNotes?.[noteType] || []));
   if (!savedNotes) {
-    return JSON.parse(JSON.stringify(window.publishedLifeNotes?.[noteType] || []));
+    return publishedNotes;
   }
 
   try {
-    return JSON.parse(savedNotes) || [];
+    const notes = JSON.parse(savedNotes) || [];
+    if (notes.length === 0) {
+      return publishedNotes;
+    }
+    const savedIds = new Set(notes.map((note) => note.id));
+    return [...notes, ...publishedNotes.filter((note) => !savedIds.has(note.id))];
   } catch {
-    return [];
+    return publishedNotes;
   }
 }
 
 function saveNotes(notes) {
-  localStorage.setItem(storageKey, JSON.stringify(notes));
   const ui = noteUiText[activeLanguage()];
-  showStatus(ui.saved);
+  try {
+    localStorage.setItem(storageKey, JSON.stringify(notes));
+    showStatus(ui.saved);
+    return true;
+  } catch {
+    showStatus(ui.storageError);
+    return false;
+  }
 }
 
 function showStatus(message) {
@@ -220,14 +235,14 @@ async function resizeImage(file) {
       const image = new Image();
       image.addEventListener("error", reject);
       image.addEventListener("load", () => {
-        const maxSize = 1200;
+        const maxSize = 900;
         const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
         const canvas = document.createElement("canvas");
         canvas.width = Math.round(image.width * scale);
         canvas.height = Math.round(image.height * scale);
         const context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL("image/jpeg", 0.82));
+        resolve(canvas.toDataURL("image/jpeg", 0.72));
       });
       image.src = reader.result;
     });
@@ -313,7 +328,7 @@ function renderNotes() {
 
     const fileInput = document.createElement("input");
     fileInput.type = "file";
-    fileInput.accept = "image/*";
+    fileInput.accept = "image/*,.heic,.heif";
     fileInput.multiple = true;
 
     const actions = document.createElement("div");
