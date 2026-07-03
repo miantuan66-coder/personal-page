@@ -164,8 +164,8 @@ function loadNotes() {
     if (notes.length === 0) {
       return publishedNotes;
     }
-    const savedIds = new Set(notes.map((note) => note.id));
-    return [...notes, ...publishedNotes.filter((note) => !savedIds.has(note.id))];
+    const publishedIds = new Set(publishedNotes.map((note) => note.id));
+    return [...publishedNotes, ...notes.filter((note) => !publishedIds.has(note.id))];
   } catch {
     return publishedNotes;
   }
@@ -206,6 +206,15 @@ function getNoteImages(note) {
   }
 
   return note.image ? [note.image] : [];
+}
+
+function localizedNoteField(note, field) {
+  const value = note[field];
+  if (value && typeof value === "object" && !Array.isArray(value)) {
+    return value[activeLanguage()] || value.ja || value.zh || value.en || "";
+  }
+
+  return value || "";
 }
 
 function isHeicFile(file) {
@@ -320,14 +329,14 @@ function renderNotes() {
     titleLabel.textContent = ui.noteTitle;
     const titleInput = document.createElement("input");
     titleInput.type = "text";
-    titleInput.value = note.title;
+    titleInput.value = localizedNoteField(note, "title");
     titleInput.placeholder = ui.placeholderTitle;
 
     const bodyLabel = document.createElement("label");
     bodyLabel.textContent = ui.noteBody;
     const bodyInput = document.createElement("textarea");
     bodyInput.rows = 5;
-    bodyInput.value = note.body;
+    bodyInput.value = localizedNoteField(note, "body");
     bodyInput.placeholder = ui.placeholderBody;
 
     const fileInput = document.createElement("input");
