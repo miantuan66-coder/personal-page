@@ -19,9 +19,18 @@ const aiNoteTypes = {
 const aiNoteText = {
   ja: {
     editorTitle: "内容を編集する",
-    help: "この内容は現在のブラウザに保存されます。公開する時は内容を整理してページに反映します。",
-    label: "本文",
-    placeholder: "ここに内容を書きます。",
+    help: "この内容は現在のブラウザに保存されます。公開する時はバックアップを書き出して共有してください。",
+    add: "記録を追加",
+    titleLabel: "タイトル",
+    bodyLabel: "説明文",
+    imageEmpty: "写真を複数選べます",
+    imageAlt: "追加した写真",
+    removeImage: "写真をすべて削除",
+    removeSingleImage: "削除",
+    deleteNote: "この記録を削除",
+    placeholderTitle: "例：AIで整理した学習計画",
+    placeholderBody: "画像の内容、AIをどう使ったか、何が改善したかを書きます。",
+    empty: "まだ記録がありません。右上のボタンから追加できます。",
     saved: "保存しました",
     exportNote: "バックアップを書き出す",
     importNote: "バックアップを読み込む",
@@ -29,12 +38,23 @@ const aiNoteText = {
     importDone: "バックアップを読み込みました",
     importError: "バックアップを読み込めませんでした",
     clearConfirm: "このページの内容を削除しますか？",
+    imageError: "一部の写真を表示できませんでした。JPG/PNG/WebPを選んでください。",
+    storageError: "保存容量が足りません。写真を減らすか、JPGに変換してからもう一度試してください。",
   },
   zh: {
     editorTitle: "编辑内容",
-    help: "内容会保存在当前浏览器。需要公开时，我会再帮你整理并反映到网页里。",
-    label: "正文",
-    placeholder: "在这里写内容。",
+    help: "内容会保存在当前浏览器。需要公开时，请导出备份发给我，我再整理进正式网页。",
+    add: "添加记录",
+    titleLabel: "标题",
+    bodyLabel: "说明文字",
+    imageEmpty: "可以选择多张照片",
+    imageAlt: "已添加的照片",
+    removeImage: "删除全部照片",
+    removeSingleImage: "删除",
+    deleteNote: "删除这条记录",
+    placeholderTitle: "例：用 AI 整理的学习计划",
+    placeholderBody: "写下图片内容、如何使用 AI、改善了什么。",
+    empty: "还没有记录。可以从右上角按钮添加。",
     saved: "已保存",
     exportNote: "导出备份",
     importNote: "导入备份",
@@ -42,12 +62,23 @@ const aiNoteText = {
     importDone: "已导入备份",
     importError: "无法导入备份",
     clearConfirm: "要删除这个页面里的内容吗？",
+    imageError: "有些照片无法显示。请选择 JPG/PNG/WebP。",
+    storageError: "浏览器保存空间不够。请减少照片数量，或先转成 JPG 后再试。",
   },
   en: {
     editorTitle: "Edit Content",
-    help: "This content is saved in this browser. When it is ready to publish, I will organize it into the page.",
-    label: "Body",
-    placeholder: "Write here.",
+    help: "This content is saved in this browser. Export a backup when you want me to publish it on the public page.",
+    add: "Add note",
+    titleLabel: "Title",
+    bodyLabel: "Description",
+    imageEmpty: "You can choose multiple photos",
+    imageAlt: "Added photo",
+    removeImage: "Remove all photos",
+    removeSingleImage: "Remove",
+    deleteNote: "Delete this note",
+    placeholderTitle: "Example: Study plan organized with AI",
+    placeholderBody: "Write what the image shows, how you used AI, and what improved.",
+    empty: "No notes yet. Add one from the button above.",
     saved: "Saved",
     exportNote: "Export backup",
     importNote: "Import backup",
@@ -55,13 +86,16 @@ const aiNoteText = {
     importDone: "Backup imported",
     importError: "Could not import backup",
     clearConfirm: "Delete the content on this page?",
+    imageError: "Some photos could not be displayed. Please choose JPG/PNG/WebP.",
+    storageError: "There is not enough browser storage. Use fewer photos or convert them to JPG first.",
   },
 };
 
 const params = new URLSearchParams(window.location.search);
 const aiNoteType = aiNoteTypes[params.get("type")] ? params.get("type") : "thinking";
-const aiNoteBody = document.querySelector("#ai-note-body");
+const aiNoteList = document.querySelector("#ai-note-list");
 const aiSaveStatus = document.querySelector("#ai-save-status");
+const aiAddButton = document.querySelector("#ai-add-note");
 const aiExportButton = document.querySelector("#ai-export-note");
 const aiImportInput = document.querySelector("#ai-import-note");
 const aiImportButton = document.querySelector(".import-button");
@@ -73,6 +107,67 @@ function currentAiLanguage() {
   return aiNoteText[saved] ? saved : "ja";
 }
 
+function getAiImages(note) {
+  if (Array.isArray(note.images)) {
+    return note.images;
+  }
+
+  return note.image ? [note.image] : [];
+}
+
+function createAiNote(body = "") {
+  return {
+    id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    title: "",
+    body,
+    images: [],
+  };
+}
+
+function normalizeAiNotes(rawValue) {
+  if (!rawValue) {
+    return [];
+  }
+
+  if (typeof rawValue === "string") {
+    return rawValue.trim() ? [createAiNote(rawValue)] : [];
+  }
+
+  if (Array.isArray(rawValue)) {
+    return rawValue;
+  }
+
+  if (Array.isArray(rawValue.notes)) {
+    return rawValue.notes;
+  }
+
+  if (typeof rawValue.body === "string") {
+    return rawValue.body.trim() ? [createAiNote(rawValue.body)] : [];
+  }
+
+  return [];
+}
+
+function loadAiNotes() {
+  try {
+    return normalizeAiNotes(JSON.parse(localStorage.getItem(aiStorageKey)));
+  } catch {
+    return normalizeAiNotes(localStorage.getItem(aiStorageKey));
+  }
+}
+
+function saveAiNotes(notes) {
+  const ui = aiNoteText[currentAiLanguage()];
+  try {
+    localStorage.setItem(aiStorageKey, JSON.stringify(notes));
+    showAiStatus(ui.saved);
+    return true;
+  } catch {
+    showAiStatus(ui.storageError);
+    return false;
+  }
+}
+
 function updateAiNoteLanguage() {
   const language = currentAiLanguage();
   const typeText = aiNoteTypes[aiNoteType][language] || aiNoteTypes[aiNoteType].ja;
@@ -82,8 +177,7 @@ function updateAiNoteLanguage() {
   document.querySelector("#ai-note-copy").textContent = typeText[2];
   document.querySelector("#ai-editor-title").textContent = ui.editorTitle;
   document.querySelector("#ai-editor-help").textContent = ui.help;
-  document.querySelector("#ai-note-label").textContent = ui.label;
-  aiNoteBody.placeholder = ui.placeholder;
+  aiAddButton.textContent = ui.add;
   aiExportButton.textContent = ui.exportNote;
   aiImportButton.textContent = ui.importNote;
   aiClearButton.textContent = ui.clearNote;
@@ -95,26 +189,169 @@ function showAiStatus(message) {
   window.clearTimeout(aiSaveStatus.timeoutId);
   aiSaveStatus.timeoutId = window.setTimeout(() => {
     aiSaveStatus.textContent = "";
-  }, 2400);
+  }, 3200);
 }
 
-function showAiSaved() {
+async function resizeAiImage(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("error", reject);
+    reader.addEventListener("load", () => {
+      const image = new Image();
+      image.addEventListener("error", reject);
+      image.addEventListener("load", () => {
+        const maxSize = 900;
+        const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.72));
+      });
+      image.src = reader.result;
+    });
+    reader.readAsDataURL(file);
+  });
+}
+
+function appendAiImages(imageWrap, note, ui, noteIndex) {
+  const images = getAiImages(note);
+  if (images.length === 0) {
+    imageWrap.textContent = ui.imageEmpty;
+    return;
+  }
+
+  imageWrap.classList.add("has-images");
+  imageWrap.classList.add(`image-count-${Math.min(images.length, 4)}`);
+  images.forEach((imageSrc, imageIndex) => {
+    const imageItem = document.createElement("div");
+    imageItem.className = "note-image-item";
+    const image = document.createElement("img");
+    image.src = imageSrc;
+    image.alt = ui.imageAlt;
+
+    const removeSingleButton = document.createElement("button");
+    removeSingleButton.type = "button";
+    removeSingleButton.textContent = ui.removeSingleImage;
+    removeSingleButton.addEventListener("click", () => {
+      const notes = loadAiNotes();
+      const nextImages = getAiImages(notes[noteIndex]).filter((_, currentIndex) => currentIndex !== imageIndex);
+      notes[noteIndex] = { ...notes[noteIndex], image: "", images: nextImages };
+      saveAiNotes(notes);
+      renderAiNotes();
+    });
+
+    imageItem.append(image, removeSingleButton);
+    imageWrap.append(imageItem);
+  });
+}
+
+function renderAiNotes() {
+  updateAiNoteLanguage();
   const ui = aiNoteText[currentAiLanguage()];
-  showAiStatus(ui.saved);
+  const notes = loadAiNotes();
+  aiNoteList.innerHTML = "";
+
+  if (notes.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "empty-note";
+    empty.textContent = ui.empty;
+    aiNoteList.append(empty);
+    return;
+  }
+
+  notes.forEach((note, index) => {
+    const card = document.createElement("article");
+    card.className = "note-card";
+
+    const imageWrap = document.createElement("div");
+    imageWrap.className = "note-image-box";
+    appendAiImages(imageWrap, note, ui, index);
+
+    const titleLabel = document.createElement("label");
+    titleLabel.textContent = ui.titleLabel;
+    const titleInput = document.createElement("input");
+    titleInput.type = "text";
+    titleInput.value = note.title || "";
+    titleInput.placeholder = ui.placeholderTitle;
+
+    const bodyLabel = document.createElement("label");
+    bodyLabel.textContent = ui.bodyLabel;
+    const bodyInput = document.createElement("textarea");
+    bodyInput.rows = 5;
+    bodyInput.value = note.body || "";
+    bodyInput.placeholder = ui.placeholderBody;
+
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/jpeg,image/png,image/webp";
+    fileInput.multiple = true;
+
+    const actions = document.createElement("div");
+    actions.className = "note-actions";
+    const removeImageButton = document.createElement("button");
+    removeImageButton.className = "button secondary";
+    removeImageButton.type = "button";
+    removeImageButton.textContent = ui.removeImage;
+    const deleteButton = document.createElement("button");
+    deleteButton.className = "button secondary";
+    deleteButton.type = "button";
+    deleteButton.textContent = ui.deleteNote;
+    actions.append(removeImageButton, deleteButton);
+
+    function updateAiNote(updates) {
+      const nextNotes = loadAiNotes();
+      nextNotes[index] = { ...nextNotes[index], ...updates };
+      return saveAiNotes(nextNotes);
+    }
+
+    titleInput.addEventListener("input", () => updateAiNote({ title: titleInput.value }));
+    bodyInput.addEventListener("input", () => updateAiNote({ body: bodyInput.value }));
+    fileInput.addEventListener("change", async () => {
+      const files = Array.from(fileInput.files);
+      if (files.length === 0) {
+        return;
+      }
+
+      try {
+        const newImages = await Promise.all(files.map((file) => resizeAiImage(file)));
+        const saved = updateAiNote({ image: "", images: [...getAiImages(loadAiNotes()[index]), ...newImages] });
+        if (saved) {
+          fileInput.value = "";
+          renderAiNotes();
+        }
+      } catch {
+        showAiStatus(ui.imageError);
+      }
+    });
+    removeImageButton.addEventListener("click", () => {
+      updateAiNote({ image: "", images: [] });
+      renderAiNotes();
+    });
+    deleteButton.addEventListener("click", () => {
+      saveAiNotes(loadAiNotes().filter((item) => item.id !== note.id));
+      renderAiNotes();
+    });
+
+    card.append(imageWrap, titleLabel, titleInput, bodyLabel, bodyInput, fileInput, actions);
+    aiNoteList.append(card);
+  });
 }
 
-aiNoteBody.value = localStorage.getItem(aiStorageKey) || "";
-aiNoteBody.addEventListener("input", () => {
-  localStorage.setItem(aiStorageKey, aiNoteBody.value);
-  showAiSaved();
+aiAddButton.addEventListener("click", () => {
+  const notes = loadAiNotes();
+  notes.unshift(createAiNote());
+  saveAiNotes(notes);
+  renderAiNotes();
 });
 
 aiExportButton.addEventListener("click", () => {
   const payload = {
-    version: 1,
+    version: 2,
     type: aiNoteType,
     exportedAt: new Date().toISOString(),
-    body: aiNoteBody.value,
+    notes: loadAiNotes(),
   };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const link = document.createElement("a");
@@ -138,9 +375,8 @@ aiImportInput.addEventListener("change", () => {
       if (payload.type && payload.type !== aiNoteType) {
         throw new Error("Backup type does not match this page");
       }
-      const nextBody = typeof payload.body === "string" ? payload.body : "";
-      aiNoteBody.value = nextBody;
-      localStorage.setItem(aiStorageKey, nextBody);
+      saveAiNotes(normalizeAiNotes(payload));
+      renderAiNotes();
       showAiStatus(ui.importDone);
     } catch {
       showAiStatus(ui.importError);
@@ -156,13 +392,12 @@ aiClearButton.addEventListener("click", () => {
   if (!window.confirm(ui.clearConfirm)) {
     return;
   }
-  aiNoteBody.value = "";
   localStorage.removeItem(aiStorageKey);
-  showAiSaved();
+  renderAiNotes();
 });
 
 document.querySelectorAll(".language-button").forEach((button) => {
-  button.addEventListener("click", () => window.setTimeout(updateAiNoteLanguage, 0));
+  button.addEventListener("click", () => window.setTimeout(renderAiNotes, 0));
 });
 
-updateAiNoteLanguage();
+renderAiNotes();

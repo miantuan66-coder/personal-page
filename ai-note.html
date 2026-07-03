@@ -39,17 +39,15 @@
             <p class="editor-help" id="ai-editor-help">この内容は現在のブラウザに保存されます。公開する時は内容を整理してページに反映します。</p>
           </div>
           <div class="editor-actions">
+            <button class="button" type="button" id="ai-add-note">記録を追加</button>
             <button class="button" type="button" id="ai-export-note">バックアップを書き出す</button>
             <label class="button secondary import-button" for="ai-import-note">バックアップを読み込む</label>
             <input id="ai-import-note" type="file" accept="application/json,.json" />
             <button class="button secondary" type="button" id="ai-clear-note">本ページを空にする</button>
           </div>
         </div>
-        <div class="ai-edit-card">
-          <label for="ai-note-body" id="ai-note-label">本文</label>
-          <textarea id="ai-note-body" rows="12" placeholder="ここに内容を書きます。"></textarea>
-          <p class="save-status" id="ai-save-status" role="status"></p>
-        </div>
+        <div class="note-list" id="ai-note-list"></div>
+        <p class="save-status" id="ai-save-status" role="status"></p>
       </section>
     </main>
 
@@ -58,7 +56,7 @@
       <a href="./ai.html" data-i18n="backHome">トップページへ戻る</a>
     </footer>
 
-    <script src="./app.js"></script>
-    <script src="./ai-note.js"></script>
+    <script src="./app.js?v=20260703-ai-media-notes"></script>
+    <script src="./ai-note.js?v=20260703-ai-media-notes"></script>
   </body>
 </html>
