@@ -164,8 +164,8 @@ function loadNotes() {
     if (notes.length === 0) {
       return publishedNotes;
     }
-    const publishedIds = new Set(publishedNotes.map((note) => note.id));
-    return [...publishedNotes, ...notes.filter((note) => !publishedIds.has(note.id))];
+    const savedIds = new Set(notes.map((note) => note.id));
+    return [...notes, ...publishedNotes.filter((note) => !savedIds.has(note.id))];
   } catch {
     return publishedNotes;
   }
