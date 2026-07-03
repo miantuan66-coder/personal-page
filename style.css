@@ -602,7 +602,8 @@ h3 {
   cursor: pointer;
 }
 
-#import-notes {
+#import-notes,
+#ai-import-note {
   position: absolute;
   width: 1px;
   height: 1px;

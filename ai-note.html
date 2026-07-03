@@ -38,6 +38,12 @@
             <h2 id="ai-editor-title">内容を編集する</h2>
             <p class="editor-help" id="ai-editor-help">この内容は現在のブラウザに保存されます。公開する時は内容を整理してページに反映します。</p>
           </div>
+          <div class="editor-actions">
+            <button class="button" type="button" id="ai-export-note">バックアップを書き出す</button>
+            <label class="button secondary import-button" for="ai-import-note">バックアップを読み込む</label>
+            <input id="ai-import-note" type="file" accept="application/json,.json" />
+            <button class="button secondary" type="button" id="ai-clear-note">本ページを空にする</button>
+          </div>
         </div>
         <div class="ai-edit-card">
           <label for="ai-note-body" id="ai-note-label">本文</label>
