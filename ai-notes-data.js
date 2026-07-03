@@ -17,6 +17,23 @@ window.publishedAiNotes = {
       ]
     }
   ],
-  "life": [],
+  "life": [
+    {
+      "id": "1783061641319-140169ee6f072",
+      "title": {
+        "ja": "AIで整える健康習慣",
+        "zh": "用 AI 调整健康习惯",
+        "en": "Building Health Habits with AI"
+      },
+      "body": {
+        "ja": "安定して働くためには、日々の健康管理も大切だと考えています。\nそのため、AIを活用して食事や運動、生活習慣に関する情報を整理し、自分に合った方法を少しずつ取り入れています。",
+        "zh": "我认为，为了能够稳定地工作，每天的健康管理也很重要。\n因此，我会使用 AI 整理关于饮食、运动和生活习惯的信息，并一点点尝试适合自己的方法。",
+        "en": "I believe daily health management is important for working in a stable way.\nFor that reason, I use AI to organize information about meals, exercise, and daily habits, and gradually try methods that fit me."
+      },
+      "images": [
+        "./assets/ai/life/life-note-01-01.jpg"
+      ]
+    }
+  ],
   "outcome": []
 };
