@@ -35,5 +35,22 @@ window.publishedAiNotes = {
       ]
     }
   ],
-  "outcome": []
+  "outcome": [
+    {
+      "id": "published-ai-outcome-personal-page",
+      "title": {
+        "ja": "履歴書だけでは伝わりにくいことを補うために",
+        "zh": "为了补充简历难以传达的内容",
+        "en": "To Add What a Resume Cannot Fully Show"
+      },
+      "body": {
+        "ja": "履歴書には、これまでの仕事や経歴を書くことはできますが、日本の熊本で落ち着いて生活していること、日々の生活の様子、そしてAIをどのように自分の生活や学習に活用しているかまでは、十分に伝えにくいと感じていました。\n\n私は企業の方に、仕事の経験だけでなく、安定して生活する姿勢、生活を整える力、学び続ける姿勢も知っていただきたいと考えています。\n\nそのため、このWebページを作成しました。\n\nこのページでは、熊本での生活、学習の継続、AIを活用した考えの整理や生活改善について、履歴書だけでは見えにくい部分を補足して伝えています。",
+        "zh": "简历可以写清楚过去做过什么工作和经历，但我觉得很难充分传达我在日本熊本安静稳定地生活、日常生活是什么样的，以及我如何把 AI 用在自己的生活和学习中。\n\n我希望企业不仅看到我的工作经历，也能了解我稳定生活的态度、整理生活的能力，以及持续学习的姿态。\n\n因此，我制作了这个网页。\n\n在这个页面里，我会补充说明熊本的生活、学习的持续，以及我如何使用 AI 整理想法和改善生活，让简历里不容易看到的部分也能被企业了解。",
+        "en": "A resume can show my work history and experience, but I felt it was difficult to fully communicate that I live quietly and steadily in Kumamoto, Japan, what my daily life is like, and how I use AI to support my life and learning.\n\nI want companies to understand not only my work experience, but also my attitude toward stable living, my ability to organize daily life, and my willingness to keep learning.\n\nThat is why I created this web page.\n\nOn this page, I add context about my life in Kumamoto, my continued learning, and how I use AI to organize my thoughts and improve my daily life, so that companies can see parts of me that are difficult to show through a resume alone."
+      },
+      "images": [
+        "./assets/ai/outcome/personal-page-outcome-01.svg"
+      ]
+    }
+  ]
 };
