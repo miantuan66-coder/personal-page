@@ -19,7 +19,7 @@ const aiNoteTypes = {
 const aiNoteText = {
   ja: {
     editorTitle: "内容を編集する",
-    viewTitle: "記録を見る",
+    viewTitle: "詳しい内容",
     viewEyebrow: "Notes",
     help: "この内容は現在のブラウザに保存されます。公開する時はバックアップを書き出して共有してください。",
     add: "記録を追加",
@@ -32,7 +32,7 @@ const aiNoteText = {
     deleteNote: "この記録を削除",
     placeholderTitle: "例：AIで整理した学習計画",
     placeholderBody: "画像の内容、AIをどう使ったか、何が改善したかを書きます。",
-    empty: "まだ記録がありません。右上のボタンから追加できます。",
+    empty: "掲載内容は準備中です。",
     saved: "保存しました",
     exportNote: "バックアップを書き出す",
     importNote: "バックアップを読み込む",
@@ -45,7 +45,7 @@ const aiNoteText = {
   },
   zh: {
     editorTitle: "编辑内容",
-    viewTitle: "查看记录",
+    viewTitle: "详细内容",
     viewEyebrow: "记录",
     help: "内容会保存在当前浏览器。需要公开时，请导出备份发给我，我再整理进正式网页。",
     add: "添加记录",
@@ -58,7 +58,7 @@ const aiNoteText = {
     deleteNote: "删除这条记录",
     placeholderTitle: "例：用 AI 整理的学习计划",
     placeholderBody: "写下图片内容、如何使用 AI、改善了什么。",
-    empty: "还没有记录。可以从右上角按钮添加。",
+    empty: "展示内容正在准备中。",
     saved: "已保存",
     exportNote: "导出备份",
     importNote: "导入备份",
@@ -71,7 +71,7 @@ const aiNoteText = {
   },
   en: {
     editorTitle: "Edit Content",
-    viewTitle: "View Notes",
+    viewTitle: "Details",
     viewEyebrow: "Notes",
     help: "This content is saved in this browser. Export a backup when you want me to publish it on the public page.",
     add: "Add note",
@@ -84,7 +84,7 @@ const aiNoteText = {
     deleteNote: "Delete this note",
     placeholderTitle: "Example: Study plan organized with AI",
     placeholderBody: "Write what the image shows, how you used AI, and what improved.",
-    empty: "No notes yet. Add one from the button above.",
+    empty: "Content is being prepared.",
     saved: "Saved",
     exportNote: "Export backup",
     importNote: "Import backup",
@@ -99,7 +99,7 @@ const aiNoteText = {
 
 const params = new URLSearchParams(window.location.search);
 const aiNoteType = aiNoteTypes[params.get("type")] ? params.get("type") : "thinking";
-const isAiEditMode = params.get("edit") === "1";
+const isAiEditMode = false;
 const aiNoteList = document.querySelector("#ai-note-list");
 const aiSaveStatus = document.querySelector("#ai-save-status");
 const aiAddButton = document.querySelector("#ai-add-note");

@@ -57,7 +57,7 @@ const noteUiText = {
     editorEyebrow: "Edit Notes",
     editorTitle: "写真と文章を追加する",
     viewEyebrow: "Notes",
-    viewTitle: "記録を見る",
+    viewTitle: "詳しい内容",
     add: "記録を追加",
     noteTitle: "タイトル",
     noteBody: "説明文",
@@ -79,14 +79,14 @@ const noteUiText = {
     storageError: "保存容量が足りません。写真を減らすか、JPGに変換してからもう一度試してください。",
     placeholderTitle: "例：朝の学習メモ",
     placeholderBody: "写真の内容、気づいたこと、次に試したいことを書きます。",
-    empty: "まだ記録がありません。右上のボタンから追加できます。",
+    empty: "掲載内容は準備中です。",
     saved: "保存しました",
   },
   zh: {
     editorEyebrow: "编辑记录",
     editorTitle: "添加照片和文字",
     viewEyebrow: "记录",
-    viewTitle: "查看记录",
+    viewTitle: "详细内容",
     add: "添加记录",
     noteTitle: "标题",
     noteBody: "说明文字",
@@ -108,14 +108,14 @@ const noteUiText = {
     storageError: "浏览器保存空间不够。请减少照片数量，或先转成 JPG 后再试。",
     placeholderTitle: "例：早上的学习笔记",
     placeholderBody: "写下照片内容、发现的事情、下一步想尝试的事情。",
-    empty: "还没有记录。可以从右上角按钮添加。",
+    empty: "展示内容正在准备中。",
     saved: "已保存",
   },
   en: {
     editorEyebrow: "Edit Notes",
     editorTitle: "Add photos and writing",
     viewEyebrow: "Notes",
-    viewTitle: "View Notes",
+    viewTitle: "Details",
     add: "Add note",
     noteTitle: "Title",
     noteBody: "Description",
@@ -137,14 +137,14 @@ const noteUiText = {
     storageError: "There is not enough browser storage. Use fewer photos or convert them to JPG first.",
     placeholderTitle: "Example: Morning study note",
     placeholderBody: "Write what the photo shows, what you noticed, and what you want to try next.",
-    empty: "No notes yet. Add one from the button above.",
+    empty: "Content is being prepared.",
     saved: "Saved",
   },
 };
 
 const params = new URLSearchParams(window.location.search);
 const noteType = noteTypes[params.get("type")] ? params.get("type") : "stable";
-const isEditMode = params.get("edit") === "1";
+const isEditMode = false;
 const storageKey = `personalPageLifeNote:${noteType}`;
 const noteList = document.querySelector("#note-list");
 const addButton = document.querySelector("#add-note");
@@ -160,8 +160,12 @@ function activeLanguage() {
 }
 
 function loadNotes() {
-  const savedNotes = localStorage.getItem(storageKey);
   const publishedNotes = JSON.parse(JSON.stringify(window.publishedLifeNotes?.[noteType] || []));
+  if (!isEditMode) {
+    return uniqueNotes(publishedNotes);
+  }
+
+  const savedNotes = localStorage.getItem(storageKey);
   if (!savedNotes) {
     return uniqueNotes(publishedNotes);
   }
